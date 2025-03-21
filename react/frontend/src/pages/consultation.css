@@ -1,0 +1,75 @@
+/* General Page Styling */
+.consultation-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Title */
+  .consultation-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  /* Video Grid */
+  .video-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+  }
+  
+  /* Individual Video Box */
+  .video-box {
+    width: 320px;
+    height: 240px;
+    background: black;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  /* Video Titles */
+  .video-box h3 {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: white;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+  
+  /* Buttons */
+  .button-container {
+    margin-top: 20px;
+  }
+  
+  .button {
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: 0.3s;
+  }
+  
+  .join-button {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .leave-button {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .button:hover {
+    opacity: 0.8;
+  }
+  

@@ -1,0 +1,167 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  body {
+    margin: 30px 20px;
+    background-color: #f4f4f4; /* Light background to improve contrast */
+  }
+  
+  /* Logo Section */
+  .logo {
+    display: flex;
+    align-items: center;
+    margin: 20px 60px;
+  }
+  
+  .logo img {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .logo h2 {
+    font-size: 40px;
+    color: #2c67b0;
+  }
+  
+  /* Login Container */
+  .container-login {
+    background-image: radial-gradient(circle 950px at 2.5% 8%, rgba(44, 103, 176, 1) 0%, rgba(35, 56, 136, 1) 90%);
+    border-radius: 20px;
+    height: 70vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    padding: 40px;
+    margin: auto;
+    width:1000px;
+    margin-left:250px;
+    padding-bottom:50px;
+
+  }
+  
+  /* Left Panel */
+  .left-bar-login {
+    width: 40%;
+    font-size: 22px;
+    text-align: left;
+  }
+  
+  .left-bar-login h1 {
+    font-size: 35px;
+    margin-bottom: 10px;
+  }
+  
+  .left-bar-login a {
+    text-decoration: none;
+    color: white;
+    margin-left: 10px;
+  }
+  
+  .left-bar-login a:hover {
+    text-decoration: underline;
+    color: black;
+  }
+  
+  /* Login Form */
+  .login {
+    width: 50%;
+    background-color: rgba(255, 255, 255, 0.15);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  form label {
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  form input {
+    border-radius: 12px;
+    height: 45px;
+    background-color: rgba(255, 255, 255, 0.3);
+    padding: 10px;
+    outline: none;
+    color: white;
+    font-size: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    transition: all 0.3s;
+  }
+  
+  form input:focus {
+    background-color: rgba(255, 255, 255, 0.5);
+    border-color: white;
+  }
+  
+  /* Forgot Password */
+  #fp {
+    align-self: flex-end;
+    margin-bottom: 20px;
+  }
+  
+  #fp a {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+  }
+  
+  #fp a:hover {
+    text-decoration: underline;
+    color: #ddd;
+  }
+  
+  /* Login Button */
+  #btn {
+    align-self: center;
+    width: 100%;
+    max-width: 200px;
+    height: 50px;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #2c67b0;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  #btn:hover {
+    background-color: #1e4a89;
+  }
+  
+  /* Responsive Design */
+  @media screen and (max-width: 900px) {
+    .container-login {
+      flex-direction: column;
+      height: auto;
+      padding: 30px;
+      max-width: 90%;
+    }
+  
+    .left-bar-login {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+  
+    .login {
+      width: 100%;
+    }
+  }
+  
+  #last{
+    margin-left:90px;
+    margin-top:20px;
+  }
