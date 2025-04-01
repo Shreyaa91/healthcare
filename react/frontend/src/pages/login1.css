@@ -1,0 +1,119 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    background-color:white;
+
+}
+body, html {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    min-height: 100vh; /* Ensures full viewport height */
+    overflow-x: hidden; /* Prevents horizontal scroll */
+}
+
+.container-login{
+   
+    width:80vw;
+    /* height:125vh; */
+    height:90vh;
+    display:flex;    
+    justify-content: center;
+    align-items:center;
+    color:black;
+    background-color: rgb(183, 183, 228);
+    border-radius:2rem;    
+    padding-bottom: 4rem;
+    margin-bottom:23rem;
+    padding-top:2rem;
+}
+
+.login{
+    display:flex;
+    flex-direction:column;
+    gap:2rem;    
+    height:65vh;
+    width:30vw;
+    padding:2rem;
+    border-radius: 2rem;
+    /* margin-top:-10rem; */
+    padding-top:4rem;
+}
+
+.form div{
+    display:flex;
+    flex-direction: column;
+    gap:0.7rem;
+    font-size:20px;
+}
+
+.login input{
+    width:90%;
+    height:3.3rem;
+    padding:1em;
+    color:black;
+    border-radius:0.5rem;
+    margin:2%;
+    font-size:1rem;
+}
+
+
+.last {
+    display: flex;
+    flex-direction: row;   
+    justify-content: space-between; 
+    align-items: center;       
+    width: 100%; 
+    height: 10vh;
+    padding: 1rem;
+    gap: 2rem; 
+}
+#a{
+    /* align-self:flex-start; */
+    font-size:17px;
+}
+#a:hover,#signup:hover{
+    text-decoration: underline;
+}
+#signup{
+    /* align-self:flex-end; */
+    font-size:17px;
+} 
+
+.role{
+    display:flex;
+    flex-direction:row;
+    align-items: center;    
+    width:100%;
+    padding-left: 1rem;
+    
+}
+#r{
+    padding-left: 0.7rem;
+    margin-bottom:-1rem
+}
+
+#radio1,#radio2 {
+    display:flex;
+    gap:1rem;
+    flex-direction:row;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    margin-top:2%;
+    margin-right:3%;
+    background-color: white;  
+    
+
+ }  
+ @media screen and (max-width:1050px){
+    .login{
+        width:60%;
+        /* padding:1rem;         */
+        border-radius: 2rem;
+        font-size: 2vw;        
+        
+    }
+ }
+

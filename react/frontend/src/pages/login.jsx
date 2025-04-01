@@ -1,84 +1,124 @@
 import { useState } from "react";
 import { Link,useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./login.css"; // Ensure this CSS file matches your given styles
+import "./login1.css"; // Ensure this CSS file matches your given styles
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("patient");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const handleLogin = async () => {
-    try {
-      const response = await axios.post("http://localhost:8000/login", {
-        username: email, // FastAPI expects 'username'
-        password,
+  const handleChange = (e) => {
+    setRole(e.target.value); // Update role based on selection
+  };
+//   const handleLogin = async () => {
+//     try {
+//       const response = await axios.post("http://localhost:8000/login", {
+//         username: username, // FastAPI expects 'username'
+//         password,
+//       });
+
+//       // Save JWT token in localStorage
+//       localStorage.setItem("token", response.data.access_token);
+//       alert("Login successful!");
+
+//       // Check if the token is set before navigating
+//       if (response.data.access_token) {
+//         console.log("Navigating to consultation...");
+//         navigate("/consultation");  // Redirect user
+//     } else {
+//         console.log("No token received, not navigating.");
+//     }
+// } catch (err) {
+//     setError("Invalid email or password");
+//     console.error("Login error:", err);
+// }
+// };
+
+
+const handleLogin = async () => {
+  try {
+      const formData = new URLSearchParams();
+      formData.append("username", username);
+      formData.append("password", password);
+
+      const response = await axios.post("http://localhost:8000/login", formData, {
+          headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+          },
       });
 
-      // Save JWT token in localStorage
       localStorage.setItem("token", response.data.access_token);
+      localStorage.setItem("user_role", response.data.role);
       alert("Login successful!");
-
-      // Redirect 
-      navigate("/consultation");
-    } catch (err) {
+      navigate("/appointments");
+  } catch (err) {
+      console.error("Login error:", err);
       setError("Invalid email or password");
-    }
-  };
+  }
+};
+
 
   return (
-    <div>
-      <div className="logo">
-        <img src="./logo.png" alt="logo" className="logo-icon" />
-        <h2 className="logo-text">Healthcare</h2>
-      </div>
+   
 
-      <div className="container-login">
-        <div className="left-bar-login">
-          <h1>Login</h1>
-          <p>
-            Are you a specialist?
-            <a id="specialist-login" href="#login/specialist">
-              Login here
-            </a>
-          </p>
-        </div>
-
-        <div className="login">
-          <form onSubmit={(e) => e.preventDefault()}>
-            <label htmlFor="email">User name</label>
-            <input
-              type="email"
-              id="email"
-              placeholder="abc@gmail.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+  <div className="container-login">
+        
+    <div className="login">
+        <form onSubmit={(e) => e.preventDefault()}>
+          <div>
+          {/* <label htmlFor="email">User name</label> */}
+          <input
+              type="text"
+              id="username"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               required
-            />
+          />
+          </div>
 
-            <label htmlFor="pass">Password</label>
+            <div>
+            {/* <label htmlFor="pass">Password</label> */}
             <input
               type="password"
               id="pass"
               value={password}
+              placeholder="Password"
               onChange={(e) => setPassword(e.target.value)}
               required
-            />
+            />        
+              
+            </div>
+          
+        <label id="r">Role</label>
+        <div className="role">          
+          <div id="radio1">            
+            <input type="radio" id="patient" name="role" value="patient" onChange={handleChange} checked={role==="patient"}/>
+            <label htmlFor="patient">Patient</label>
+          </div>
 
-            <h4 id="fp">
-              <a href="#">Forgot password?</a>
-            </h4>
+          <div id="radio2">           
+          <input type="radio" id="specialist" name="role" value="specialist" onChange={handleChange} checked={role === "specialist"}/>
+          <label htmlFor="specialist">Specialist</label>
+          </div>
 
-            {error && <p style={{ color: "red" }}>{error}</p>}
-
-            <input type="button" value="Login" id="btn" onClick={handleLogin} />
-          </form>
-          <p id="last">
-                Already logged in? <Link id="signup" to="/signup">Signup</Link> here
-            </p>
         </div>
-      </div>
+            <button id="btn" type="button" onClick={handleLogin}>Login</button>
+            
+
+            {error && <p style={{ color: "red",textAlign:"center" }}>{error}</p>}
+            
+        </form>
+        <div className="last">
+          
+              <a id="a"href="#">Forgot password?</a>        
+              <Link id="signup" to="/signup">Signup</Link>
+        </div>
     </div>
+  </div>
+    
   );
 };
 
