@@ -1,101 +1,373 @@
-/* General container */
+.consultation-page {
+display: flex;
+flex-direction: row;
+align-items: flex-start;
+
+gap: 4rem;
+padding: 40px 20px;
+overflow-x: auto;
+}
 .consultation-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: auto; /* Auto height for responsiveness */
-    width: 80%;
-    max-width: 1000px;
-    background-color: #ffffff;
-    margin: auto;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+/* flex: 0 0 auto; */
+flex-direction: column;
+align-items: center;
+justify-content: center;
+min-width: 1000px;
+width: 60%;
+padding: 30px;
+border-radius: 10px;
+background-color: white;
+box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+.consultation-container p{
+  text-align: center;
 }
 
-/* Video Container */
 .video-container {
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    gap: 20px;
-    position: relative;
-    padding: 10px 0;
-    color:#ffffff
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  position: relative;
+  padding: 10px 0;
 }
 
-/* Video Frames */
 .video-frame {
-    width: 48%;
-    height: 300px;
-    background: black;
-    border-radius: 10px;
-    border: 2px solid #ddd;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    padding: 10px;
+  width: 900px;
+  height: 500px;
+  background: black;
+  border-radius: 15px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.5), 
+              inset 0px 0px 12px rgba(255, 255, 255, 0.3);
+  position: relative;
+  /* overflow: hidden; */
 }
 
-/* Doctor & Patient Name Inside Video */
-.video-frame span {
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    background: rgba(255, 255, 255, 0.6);
-    padding: 5px 10px;
-    border-radius: 5px;
+/* .remote-video,
+.local-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 15px;
+  transition: all 0.3s ease;
+  position: absolute;
+} */
+
+.info-container,.status-indicator {
+text-align: center;
+width: 100%;
+margin-bottom: 10px;
 }
 
-/* Button Container */
+.info-container p {
+margin: 5px 0;
+font-weight: 500;
+font-size: 16px;
+}
+ .remote-video,
+.local-video {
+  position: absolute;
+  object-fit: cover;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.remote-video {
+  z-index: 1;
+  background-color: black;
+}
+
+.local-video {
+  width: 200px;
+  height: 120px;
+  bottom: 20px;
+  right: 20px;
+  z-index: 2;
+  background-color: black;
+  border: 2px solid white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.local-video.focused {
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 3;
+}
+
+.local-video.focused + .remote-video {
+  width: 200px;
+  height: 120px;
+  top: 20px;
+  left: 20px;
+  z-index: 2;
+}
+
+.video-label {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  z-index: 4;
+}
+
 .button-container {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 10px;
+  display: flex;
+  margin-top: 30px;
+  /* background-color: #9cbada; */
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
-/* General Button Styling */
 .button {
-    padding: 10px 15px;
-    border: none;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    border-radius: 6px;
-    font-size: 14px;
-    transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* padding: 10px; */
+  border-radius: 8px;
+  border: none;
+  background-color: transparent;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 45px;
+  height: 45px;
 }
 
 .button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: transparent;
+  border:1px solid rgb(195, 190, 190);
+}
+
+.button svg {
+  width: 20px;
+  height: 20px;
+  color: black;
+}
+
+.button.join-button {
+  background: #28a745;
+  width: 120px;
+  color: white;
+}
+
+.button.leave-button {
+  background: #dc3545;
+  color: white;
+  background-color: transparent;
+}
+
+.consultation-tabs {
+flex: 0 0 auto;
+min-width: 400px;
+width: 25%;
+height: max-content;
+background: white;
+border-radius: 10px;
+box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+display: flex;
+flex-direction: column;
+padding: 20px;
+}
+
+.tab-header {
+  display: flex;
+  border-bottom: 1px solid #eee;
+}
+.file-name {
+  width: 200px;           /* Set your desired width */
+  white-space: nowrap;    /* Prevents the text from wrapping to a new line */
+  overflow: hidden;       /* Hides the overflowed text */
+  text-overflow: ellipsis;/* Adds "..." at the end if text is too long */
+}
+.tab-header button {
+  flex: 1;
+  padding: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  color: #555;
+  color:black;
+}
+
+.tab-header button.active {
+  color: #007bff;
+  border-bottom: 2px solid #007bff;
+}
+
+.tab-content {
+flex: 1;
+overflow-y: auto;
+}
+
+#b1,#b2,#b3{
+  color:black;
+}
+.chat-tab,
+.notes-tab,
+.docs-tab {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 15px;
+}
+
+.message {
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  background: #f5f5f5;
+  color: black;
+}
+
+.chat-input {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+}
+
+#chat-text-area,#note-text-area {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  color: black;
+  border-radius: 4px;
+  resize: none;
+}
+
+#send-button {
+  background-color: #007bff;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#send-button:hover {
+  background-color: #0056b3;
+}
+
+@media (max-width: 1200px) {
+  .consultation-page {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px; /* use a positive value */
+  }
+
+  .consultation-container {
+    width: 90%;         /* make it responsive */
+    margin-top: 50%;   /* use fixed or smaller % */
+    min-width: 200px;   /* ensure it doesn't shrink too much */
+    height: auto;       /* allow height to adapt to content */
+    /* background-color: #dc3545; */
+  }
+
+  .consultation-tabs {
+    width: 90%;
+    margin-top: 20px;
+    /* background-color: #007bff; */
+    min-height: max-content;
+  }
+
+  .tab-header {
+    display: flex;
+    justify-content: space-between;
+    /* flex-wrap: wrap; */
+  }
+
+  .tab-header button {
+    flex: 1 1 auto;
+    min-width: 100px;
+    margin: 5px;
+  }
+  #chat-msg,#note-msg{
+    padding-left: 30px;
+  }
+}
+
+
+
+#place-at-bottom{
+  margin-top:550px;
+}
+
+#send-button,#add-note-button{
+  margin-left:30px;
+}
+
+#chat-text-area,#note-text-area{
+  width:95%;
+  margin-left:10px;
+  margin-right:10px;
+  height:50px;
+}
+.appointment-info{
+  background-color: #eee;
+}
+.appointment-info p{
+  background: transparent !important;
+}
+.appointment-info p strong{
+  background: transparent !important;
+}
+.remote-video.focused,
+.local-video.focused {
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+.remote-video:not(.focused),
+.local-video:not(.focused) {
+  width: 200px;
+  height: 120px;
+  bottom: 20px;
+  right: 20px;
+  z-index: 3;
+  border: 2px solid white;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+
+.info-container{
+  align-self: center;
+}
+/* @media (max-width: 1470px) {
+    .consultation-tabs {
+    width: 20%;
+    height: 760px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    background: white;
+  }
+    .consultation-container {
+    display: flex;
     background-color: #0056b3;
-}
-
-/* Leave / End Call Button */
-.leave-button {
-    background-color: rgb(239, 63, 63);
-}
-
-.leave-button:hover {
-    background-color: darkred;
-}
-
-/* End Call Button */
-.end-call-button {
-    background-color: #ed5d6b;
-    font-weight: bold;
-}
-
-.end-call-button:hover {
-    background-color: #b52b3b;
-}
-/* p{
-    color: #ffffff;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    flex-direction: column;
+    width: 95%;
+  }
 } */

@@ -1,283 +1,40 @@
-// import { useState, useEffect, useRef, useCallback } from "react";
-// import AgoraRTC from "agora-rtc-sdk-ng";
-// import './consultation.css';
-
-// const APP_ID = "e033326f78f74bac91c57b3b5d5c82e5";
-// const CHANNEL_NAME = "Channel1";
-// const TEMP_TOKEN = "007eJxTYODtuXjWb+cb/pmn75SsusHP68nNXn+x/4XgyrMBpZfTnCUVGFINjI2NjczSzC3SzE2SEpMtDZNNzZOMk0xTTJMtjFJNp2ndTW8IZGTg/H6OhZEBAkF8DgbnjMS8vNQcQwYGAN8GIQY="; 
-
-// const Consultation = () => {
-//     const client = useRef(AgoraRTC.createClient({ mode: "rtc", codec: "vp8" }));
-//     const localVideoRef = useRef(null);
-//     const remoteVideoRef = useRef(null);
-//     const localTracks = useRef({});
-//     const [joined, setJoined] = useState(false);
-
-   
-//     const joinChannel = useCallback(async () => {
-//         try {
-//             await client.current.join(APP_ID, CHANNEL_NAME, TEMP_TOKEN, null);
-    
-//             localTracks.current.videoTrack = await AgoraRTC.createCameraVideoTrack();
-//             localTracks.current.audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-    
-//             if (localVideoRef.current) {
-//                 localTracks.current.videoTrack.play(localVideoRef.current);
-//             } else {
-//                 console.error("Local video container not found.");
-//             }
-    
-//             await client.current.publish([localTracks.current.videoTrack, localTracks.current.audioTrack]);
-    
-//             setJoined(true);
-//         } catch (error) {
-//             console.error("Error joining the channel:", error);
-//         }
-//     }, []);
-    
-    
-//     const leaveChannel = useCallback(async () => {
-//         for (let trackName in localTracks.current) {
-//             localTracks.current[trackName].stop();
-//             localTracks.current[trackName].close();
-//         }
-//         await client.current.leave();
-//         setJoined(false);
-//     }, []);
-    
-
-   
-//     const handleUserPublished = async (user, mediaType) => {
-//         await client.current.subscribe(user, mediaType);
-//         console.log("User Published:", user, "Media Type:", mediaType);
-    
-//         if (mediaType === "video") {
-//             if (remoteVideoRef.current) {
-//                 user.videoTrack.play(remoteVideoRef.current);
-//             } else {
-//                 console.error("Remote video container not found.");
-//             }
-//         } else if (mediaType === "audio") {
-//             user.audioTrack.play();
-//         }
-//     };
-    
-//     useEffect(() => {
-//         client.current.on("user-published", handleUserPublished);
-    
-//         return () => {
-//             client.current.off("user-published", handleUserPublished);
-//             leaveChannel();
-//         };
-//     }, [handleUserPublished, leaveChannel]);
-
-//     return (
-//         <div className="consultation-container">
-//             <h2 className="consultation-title">Video Consultation</h2>
-
-//             <div className="video-container">
-//                 <div className="video-box">
-                    
-//                     <div ref={localVideoRef} className="video-frame"><h3>Your Video</h3></div>
-//                 </div>
-//                 <div className="video-box">
-                    
-//                     <div ref={remoteVideoRef} className="video-frame"><h3>Remote Video</h3></div>
-//                 </div>
-//             </div>
-
-//             <div className="button-container">
-//                 {!joined ? (
-//                     <button className="button join-button" onClick={joinChannel}>Join Call</button>
-//                 ) : (
-//                     <button className="button leave-button" onClick={leaveChannel}>Leave Call</button>
-//                 )}
-//             </div>
-//         </div>
-//     );
-// };
-
-// export default Consultation;
-
-// const Consultation = () => {
-//     const client = useRef(AgoraRTC.createClient({ mode: "rtc", codec: "vp8" }));
-//     const localVideoRef = useRef(null);
-//     const remoteVideoRef = useRef(null);
-//     const localTracks = useRef({});
-//     const [joined, setJoined] = useState(false);
-
-//     // Chat State
-//     const [chatOpen, setChatOpen] = useState(false);
-//     const [messages, setMessages] = useState([]);
-//     const [message, setMessage] = useState("");
-
-//     // Agora RTM Client
-//     const rtmClient = useRef(null);
-//     const channel = useRef(null);
-
-//     //  Join Channel Function
-//     const joinChannel = useCallback(async () => {
-//         try {
-//             await client.current.join(APP_ID, CHANNEL_NAME, TEMP_TOKEN, null);
-
-//             localTracks.current.videoTrack = await AgoraRTC.createCameraVideoTrack();
-//             localTracks.current.audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-
-//             if (localVideoRef.current) {
-//                 localTracks.current.videoTrack.play(localVideoRef.current);
-//             }
-
-//             await client.current.publish([localTracks.current.videoTrack, localTracks.current.audioTrack]);
-//             setJoined(true);
-
-//             // Join RTM (Chat)
-//             rtmClient.current = AgoraRTM.createInstance(APP_ID);
-//             await rtmClient.current.login({ uid: String(Date.now()), token: RTM_TOKEN });
-
-//             channel.current = rtmClient.current.createChannel(CHANNEL_NAME);
-//             await channel.current.join();
-
-//             // Handle incoming messages
-//             channel.current.on("ChannelMessage", ({ text }, senderId) => {
-//                 setMessages((prev) => [...prev, { sender: senderId, text }]);
-//             });
-
-//         } catch (error) {
-//             console.error("Error joining the channel:", error);
-//         }
-//     }, []);
-
-//     //  Leave Channel Function
-//     const leaveChannel = useCallback(async () => {
-//         for (let trackName in localTracks.current) {
-//             localTracks.current[trackName].stop();
-//             localTracks.current[trackName].close();
-//         }
-//         await client.current.leave();
-
-//         if (channel.current) {
-//             await channel.current.leave();
-//         }
-//         if (rtmClient.current) {
-//             await rtmClient.current.logout();
-//         }
-
-//         setJoined(false);
-//     }, []);
-
-//     // Handle User Published Events
-//     useEffect(() => {
-//         const handleUserPublished = async (user, mediaType) => {
-//             await client.current.subscribe(user, mediaType);
-//             if (mediaType === "video") {
-//                 if (remoteVideoRef.current) {
-//                     user.videoTrack.play(remoteVideoRef.current);
-//                 }
-//             } else if (mediaType === "audio") {
-//                 user.audioTrack.play();
-//             }
-//         };
-
-//         client.current.on("user-published", handleUserPublished);
-
-//         return () => {
-//             client.current.off("user-published", handleUserPublished);
-//             leaveChannel();
-//         };
-//     }, [leaveChannel]);
-
-//     //  Send Message Function
-//     const sendMessage = async () => {
-//         if (channel.current && message.trim()) {
-//             await channel.current.sendMessage({ text: message });
-//             setMessages([...messages, { sender: "Me", text: message }]);
-//             setMessage("");
-//         }
-//     };
-
-//     return (
-//         <div className="consultation-container">
-//             <h2 className="consultation-title">Agora Video Consultation</h2>
-
-//             <div className="video-container">
-//                 <div className="video-box">
-//                     <h3>Your Video</h3>
-//                     <div ref={localVideoRef} className="video-frame"></div>
-//                 </div>
-//                 <div className="video-box">
-//                     <h3>Remote Video</h3>
-//                     <div ref={remoteVideoRef} className="video-frame"></div>
-//                 </div>
-//             </div>
-
-//             {/* Buttons */}
-//             <div className="button-container">
-//                 {!joined ? (
-//                     <button className="button join-button" onClick={joinChannel}>Join Call</button>
-//                 ) : (
-//                     <button className="button leave-button" onClick={leaveChannel}>Leave Call</button>
-//                 )}
-//                 <button className="button chat-button" onClick={() => setChatOpen(!chatOpen)}>
-//                     {chatOpen ? "Close Chat" : "Open Chat"}
-//                 </button>
-//             </div>
-
-//             {/* Chatbox */}
-//             {chatOpen && (
-//                 <div className="chat-box">
-//                     <div className="chat-header">Chat</div>
-//                     <div className="chat-messages">
-//                         {messages.map((msg, index) => (
-//                             <div key={index} className={`chat-message ${msg.sender === "Me" ? "sent" : "received"}`}>
-//                                 <strong>{msg.sender}:</strong> {msg.text}
-//                             </div>
-//                         ))}
-//                     </div>
-//                     <div className="chat-input">
-//                         <input
-//                             type="text"
-//                             value={message}
-//                             onChange={(e) => setMessage(e.target.value)}
-//                             placeholder="Type a message..."
-//                         />
-//                         <button onClick={sendMessage}>Send</button>
-//                     </div>
-//                 </div>
-//             )}
-//         </div>
-//     );
-// };
-
-// export default Consultation;
-
-
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import "./consultation.css";
-// import { useState, useEffect } from "react";
+import {io} from 'socket.io-client';
+import { FiMic, FiMicOff, FiVideo, FiVideoOff, FiMonitor, FiStopCircle, FiPhoneOff, FiCircle } from "react-icons/fi";
 
-const APP_ID = "e033326f78f74bac91c57b3b5d5c82e5";
-const CHANNEL_NAME = "Channel1";
-const TEMP_TOKEN = "007eJxTYODtuXjWb+cb/pmn75SsusHP68nNXn+x/4XgyrMBpZfTnCUVGFINjI2NjczSzC3SzE2SEpMtDZNNzZOMk0xTTJMtjFJNp2ndTW8IZGTg/H6OhZEBAkF8DgbnjMS8vNQcQwYGAN8GIQY=";
-const RTM_TOKEN = "your_rtm_token_here";
 
-const Consultation = () => {
+const Consultation = (user) => {
+    console.log("USER:",user);
+    const userID=user.id;
+    
+    const navigate=useNavigate();
+    console.log("USER ID:",userID);
+    const { channel_name } = useParams();
+    const [appointment, setAppointment] = useState(null);
+    const [isJoined, setIsJoined] = useState(false); // State to track if joined
+  const [isCameraPermissionGranted, setIsCameraPermissionGranted] = useState(false); // Track camera permission
+  const [isTokenFetched, setIsTokenFetched] = useState(false); // Track token fetch success
     const client = useRef(AgoraRTC.createClient({ mode: "rtc", codec: "vp8" }));
     const localVideoRef = useRef(null);
     const remoteVideoRef = useRef(null);
     const localTracks = useRef({});
+    const [activeTab, setActiveTab] = useState("chat");
     const [joined, setJoined] = useState(false);
     const [chatOpen, setChatOpen] = useState(false);
     const [notesOpen, setNotesOpen] = useState(false);
     const [notes, setNotes] = useState([]);
     const [noteText, setNoteText] = useState("");
-    const [uploadedFile, setUploadedFile] = useState(null);
+    const [uploadedFiles, setUploadedFiles] = useState([]);
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState("");
     const rtmClient = useRef(null);
     const channel = useRef(null);
     const [chatMessages, setChatMessages] = useState([]);
     const [chatInput, setChatInput] = useState("");
+    const [focusedVideo, setFocusedVideo] = useState("remote"); // or "remote"
 
     const [doctorJoined, setDoctorJoined] = useState(false);
     const [isMuted, setIsMuted] = useState(false);
@@ -289,17 +46,237 @@ const Consultation = () => {
     const recordedChunks = useRef([]);
     const [isRecording, setIsRecording] = useState(false);
     const [currentTime, setCurrentTime] = useState(new Date().toLocaleString());
+    const socket = useRef(null);
 
+    const token = localStorage.getItem("token");
+    // const tokenString = token ? JSON.parse(token) : null;
+    // const userID = token?.id; 
+    console.log("TOKEN:",token);
+    
+    const APP_ID = import.meta.env.VITE_AGORA_APP_ID;
+    console.log("ENVIRONMENT IMPORTS",import.meta.env);
 
-    const doctor = { name: "Dr. John Doe", specialty: "Cardiologist", profilePic: "https://via.placeholder.com/80" };
-    const patient = { name: "Jane Smith", reason: "Heart Checkup", appointmentTime: "March 26, 2025 - 10:30 AM", profilePic: "https://via.placeholder.com/80" };
+   useEffect(() => {
+  socket.current = io("http://localhost:8000", {
+    transports: ["websocket", "polling"],
+  });
 
-    const sendMessage = () => {
-        if (chatInput.trim()) {
-            setChatMessages(prevMessages => [...prevMessages, { sender: "Me", text: chatInput }]);
-            setChatInput(""); // Clear input field after sending
-        }
+  socket.current.on("connect", () => {
+    console.log("Connected to server");
+  });
+
+  socket.current.on("receive_message", (message) => {
+    console.log("Received message:", message);
+    setChatMessages((prevMessages) => [...prevMessages, message]);
+  });
+
+  return () => {
+    if (socket.current) {
+      socket.current.disconnect();
+    }
+  };
+}, []);
+
+    const handleVideoClick = (videoType) => {
+        setFocusedVideo(videoType);
+      };
+// const handleCallEnd = async () => {
+//     console.log("Ending call for appointment:", appointment);
+    
+//     if (!appointment || !appointment.id) {
+//         console.error("Cannot end call: Appointment data is missing");
+//         return;
+//     }
+    
+//     // Make sure token is available and properly formatted
+//     const authToken = localStorage.getItem('token') || sessionStorage.getItem('token');
+    
+//     if (!authToken) {
+//         console.error("Authentication token is missing");
+//         alert("You need to be logged in to end this call");
+//         return;
+//     }
+    
+//     const payload = {
+//         appointment_id: appointment.id,
+//         patient_id: appointment.patient_id,
+//         doctor_id: appointment.doctor_id,
+//         duration: Math.floor(seconds / 60),
+//         summary: "Consultation completed successfully",
+//     };
+
+//     console.log("Sending payload:", payload);
+    
+//     try {
+//         // Try using the fetch API instead of axios in case there's an issue with axios
+//         console.log("Attempting to post to consultation/complete endpoint with fetch");
+        
+//         const response = await fetch("http://localhost:8000/consultation/complete", {
+//             method: "POST",
+//             headers: {
+//                 "Content-Type": "application/json",
+//                 "Authorization": `Bearer ${authToken}`
+//             },
+//             body: JSON.stringify(payload)
+//         });
+        
+//         console.log("Response status:", response.status);
+        
+//         if (response.ok) {
+//             const data = await response.json();
+//             console.log("Consultation API response:", data);
+//             console.log("Consultation saved and appointment marked completed.");
+//             await leaveChannel();
+//             navigate("/appointments");
+//         } else {
+//             const errorText = await response.text();
+//             console.error("Server returned error:", response.status, errorText);
+//             alert(`Failed to complete consultation: ${response.status} ${errorText}`);
+//         }
+//     } catch (err) {
+//         console.error("Error during call end:", err);
+//         alert("Failed to complete the consultation. Network or server error.");
+//     }
+// };
+      
+
+const handleCallEnd = async () => {
+    console.log("Ending call for appointment:", appointment);
+    
+    if (!appointment || !appointment.id) {
+        console.error("Cannot end call: Appointment data is missing");
+        return;
+    }
+    
+    // Make sure token is available and properly formatted
+    const authToken = localStorage.getItem('token') || sessionStorage.getItem('token');
+    
+    if (!authToken) {
+        console.error("Authentication token is missing");
+        alert("You need to be logged in to end this call");
+        return;
+    }
+    
+    const payload = {
+        appointment_id: appointment.id,
+        patient_id: appointment.patient_id,
+        doctor_id: appointment.doctor_id,
+        duration: Math.floor(seconds / 60),
+        summary: "Consultation completed successfully",
     };
+
+    console.log("Sending payload:", payload);
+    console.log("Using authorization token:", authToken.substring(0, 10) + "...");
+    
+    try {
+        // Attempt to leave the channel first to ensure it happens even if the API call fails
+        console.log("Leaving channel first...");
+        await leaveChannel();
+        
+        console.log("Attempting to post to consultation/complete endpoint with fetch");
+        console.log("Full request URL:", "http://localhost:8000/consultation/complete");
+  
+        
+        // Make the actual API call
+        const response = await fetch("http://localhost:8000/consultation/complete", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${authToken}`,
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(payload),
+            // Adding these options to help diagnose CORS issues
+            mode: 'cors',
+            credentials: 'include'
+        });
+        
+        console.log("Response received:", response);
+        console.log("Response status:", response.status);
+        
+        if (response.ok) {
+            try {
+                const data = await response.json();
+                console.log("Consultation API response data:", data);
+            } catch (jsonError) {
+                console.log("Could not parse JSON response:", jsonError);
+                console.log("Raw response:", await response.text());
+            }
+            
+            console.log("Consultation saved and appointment marked completed.");
+            navigate("/appointment");
+        } else {
+            let errorMessage = `Status: ${response.status}`;
+            try {
+                const errorData = await response.json();
+                console.error("Error response data:", errorData);
+                errorMessage += ` - ${errorData.detail || JSON.stringify(errorData)}`;
+            } catch (e) {
+                const errorText = await response.text();
+                errorMessage += ` - ${errorText || "No error details available"}`;
+            }
+            
+            console.error("Server returned error:", errorMessage);
+            alert(`Failed to complete consultation. ${errorMessage}`);
+            
+            // Navigate anyway since we've already left the channel
+            navigate("/appointment");
+        }
+    } catch (err) {
+        console.error("Error during call end:", err);
+        
+        // Log more details about the error
+        if (err.name) console.error("Error name:", err.name);
+        if (err.message) console.error("Error message:", err.message);
+        if (err.stack) console.error("Error stack:", err.stack);
+        
+        alert("Failed to complete the consultation. Network or server error: " + err.message);
+        
+        // Navigate anyway since we've already left the channel
+        navigate("/appointment");
+    }
+};
+    // const sendMessage = () => {
+    //     if (chatInput.trim()) {
+    //         setChatMessages(prevMessages => [...prevMessages, { sender: "Me", text: chatInput }]);
+    //         setChatInput(""); // Clear input field after sending
+    //     }
+    // };
+const sendMessage = () => {
+  console.log("Send button clicked"); // Step 1 check
+
+  if (chatInput.trim()) {
+    const message = { sender: userID, text: chatInput, channel_name };
+    console.log("Sending message:", message); // Step 2 check
+    socket.current.emit('send_message', message);
+    setChatInput("");
+  } else {
+    console.log("Chat input is empty or whitespace only");
+  }
+};
+
+
+
+    
+    useEffect(() => {
+        const fetchAppointmentDetails = async () => {
+          try {
+            const response = await fetch(`http://localhost:8000/appointments/${channel_name}`);
+            if (!response.ok) {
+              throw new Error('Failed to fetch appointment data');
+            }
+            const data = await response.json();
+            console.log("DATA",data);
+            setAppointment(data);  // Save appointment data to state
+          } catch (error) {
+            console.error('Error fetching appointment details:', error);
+          }
+        };
+    
+        fetchAppointmentDetails();
+      }, [channel_name]);  // Re-run effect when channel_name changes
+    
+    console.log("Appointment:",appointment);
     
     const addNote = () => {
         if (noteText.trim()) {
@@ -311,34 +288,217 @@ const Consultation = () => {
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
         if (file) {
-            setUploadedFile({
+            const newFile = {
                 name: file.name,
-                url: URL.createObjectURL(file), // Creates a preview URL
-            });
+                url: URL.createObjectURL(file),
+            };
+            setUploadedFiles(prev => [...prev, newFile]);
         }
     };
     
+    const renderTabContent = () => {
+        if (activeTab === 'chat') {
+            return (
+                <div className="chat-tab">
+  {/* <ul id="chat-msg">
+  {chatMessages.map((msg, index) => (
+    
+    <li key={index}>
+      <strong>{msg.sender === userID ? 'Me' : 'Them'}:</strong> {msg.text}
+    </li>
+  ))}
+</ul> */}<ul id="chat-msg">
+  {chatMessages.map((msg, index) => {
+    console.log("msg.sender:", msg.sender, "userID:", userID, "Equal:", msg.sender.user === userID.user);
+    
+    return (
+      <li key={index}>
+        <strong>{msg.sender === userID ? 'Me' : 'Them'}:</strong> {msg.text}
+      </li>
+    );
+  })}
+</ul>
 
+                    <div id="place-at-bottom">
+                    <textarea id="chat-text-area"
+                        value={chatInput}
+                        onChange={(e) => setChatInput(e.target.value)}
+                        placeholder="Type a message..."
+                    />
+                    <button id="send-button" onClick={sendMessage}>Send</button>
+                </div>
+                </div>
+            );
+        } else if (activeTab === 'notes') {
+            return (
+                <div className="notes-tab">
+                    <ul id="note-msg">
+                        {notes.map((note, index) => (
+                            <li key={index}>{note}</li>
+                        ))}
+                    </ul>
+                    <div id="place-at-bottom">
+                    <textarea
+                    id="note-text-area"
+                        value={noteText}
+                        onChange={(e) => setNoteText(e.target.value)}
+                        placeholder="Write your note..."
+                    />
+                    <button id="add-note-button" onClick={addNote}>Add Note</button>
+                </div>
+                </div>
+            );
+        } else if (activeTab === 'docs') {
+            return (
+                <div className="docs-tab">
+                    <input
+                        type="file"
+                        onChange={handleFileUpload}
+                    />
+                    {uploadedFiles.map((file, index) => (
+                        <div key={index}>
+                            <p className="file-name"><strong>{file.name}</strong></p>
+                            <a href={file.url} target="_blank" rel="noopener noreferrer">View File</a>
+                        </div>
+                    ))}
+                </div>
+            );
+        }
+        
+    };
+    
+  
+   
+    // const joinChannel = useCallback(async () => {
+    //     if (!appointment || !appointment.id) {
+    //       console.error("❌ Appointment not loaded");
+    //       return;
+    //     }
+    //     console.log(appointment)
+    
+    //     try {
+    //       console.log("🔄 Requesting camera access...");
+    //       await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    
+    //       const tokenResponse = await fetch(
+    //         `http://localhost:8000/consultation/token?appointment_id=${appointment.id}&uid=0`
+    //       );
+    //       const tokenData = await tokenResponse.json();
+    
+    //       if (!tokenResponse.ok) {
+    //         console.error("❌ Failed to get token:", tokenData.detail);
+    //         return;
+    //       }
+    //       console.log("Token data:",tokenData);
+    //       const { token, channel_name, uid } = tokenData;
+    //       console.log("Token:",token);
+    //       console.log("ChannelName:",channel_name);
+    //       console.log("UID:",uid);
+    //       console.log("App ID:",APP_ID);
+    //       console.log("🔄 Joining Agora channel...");
+         
+    //       await client.current.join(APP_ID, channel_name, token, uid); 
+    //       console.log("🎥 Creating camera tracks...");
+    //       localTracks.current.videoTrack = await AgoraRTC.createCameraVideoTrack();
+    //       localTracks.current.audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+    
+    //       if (localVideoRef.current) {
+    //         localTracks.current.videoTrack.play(localVideoRef.current);
+    //       }
+    
+    //       console.log("📡 Publishing...");
+    //       await client.current.publish([
+    //         localTracks.current.videoTrack,
+    //         localTracks.current.audioTrack,
+    //       ]);
+    
+    //       setJoined(true);
+    //     } catch (error) {
+    //       console.error("❌ Error in joinChannel:", error);
+    //     }
+    // }, [appointment]);
+    
     const joinChannel = useCallback(async () => {
+        if (!appointment || !appointment.id) {
+          console.error("❌ Appointment not loaded");
+          return;
+        }
+        console.log(appointment);
+          
         try {
-            await client.current.join(APP_ID, CHANNEL_NAME, TEMP_TOKEN, null);
+          // Get token first
+          const tokenResponse = await fetch(
+            `http://localhost:8000/consultation/token?appointment_id=${appointment.id}&uid=0`
+          );
+          const tokenData = await tokenResponse.json();
+              
+          if (!tokenResponse.ok) {
+            console.error("❌ Failed to get token:", tokenData.detail);
+            return;
+          }
+          
+          console.log("Token data:", tokenData);
+          const { token, channel_name, uid } = tokenData;
+          console.log("Token:", token);
+          console.log("ChannelName:", channel_name);
+          console.log("UID:", uid);
+          console.log("App ID:", APP_ID);
+          
+          // Join channel first
+          console.log("🔄 Joining Agora channel...");
+          await client.current.join(APP_ID, channel_name, token, uid);
+          
+          // Try to get camera/mic access, but continue even if not available
+          try {
+            console.log("🔄 Requesting camera access...");
+            await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            setIsCameraPermissionGranted(true);
+            
+            // Create tracks if permission granted
+            console.log("🎥 Creating camera tracks...");
             localTracks.current.videoTrack = await AgoraRTC.createCameraVideoTrack();
             localTracks.current.audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-            if (localVideoRef.current) localTracks.current.videoTrack.play(localVideoRef.current);
-            await client.current.publish([localTracks.current.videoTrack, localTracks.current.audioTrack]);
-            setJoined(true);
-
-            rtmClient.current = AgoraRTC.createInstance(APP_ID);
-            await rtmClient.current.login({ uid: String(Date.now()), token: RTM_TOKEN });
-            channel.current = rtmClient.current.createChannel(CHANNEL_NAME);
-            await channel.current.join();
-            channel.current.on("ChannelMessage", ({ text }, senderId) => {
-                setMessages((prev) => [...prev, { sender: senderId, text }]);
-            });
+            
+            if (localVideoRef.current && localTracks.current.videoTrack) {
+              localTracks.current.videoTrack.play(localVideoRef.current);
+            }
+            
+            // Publish available tracks
+            const tracksToPublish = [];
+            if (localTracks.current.videoTrack) tracksToPublish.push(localTracks.current.videoTrack);
+            if (localTracks.current.audioTrack) tracksToPublish.push(localTracks.current.audioTrack);
+            
+            if (tracksToPublish.length > 0) {
+              console.log("📡 Publishing tracks:", tracksToPublish.length);
+              await client.current.publish(tracksToPublish);
+            }
+            
+          } catch (mediaError) {
+            console.warn("⚠️ Could not access camera/microphone:", mediaError);
+            setIsCameraPermissionGranted(false);
+            
+            // Continue without camera/mic - user can still see remote participant
+            console.log("Continuing without local media devices");
+            
+            // Try to get audio only if video fails
+            try {
+              console.log("Trying audio only...");
+              localTracks.current.audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+              await client.current.publish([localTracks.current.audioTrack]);
+            } catch (audioError) {
+              console.warn("Could not access microphone either:", audioError);
+            }
+          }
+          
+          // Set joined status regardless of camera access
+          setJoined(true);
+          setIsTokenFetched(true);
+          
         } catch (error) {
-            console.error("Error joining the channel:", error);
+          console.error("❌ Error in joinChannel:", error);
         }
-    }, []);
+      }, [appointment]);
+    
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentTime(new Date().toLocaleString()); // Update every second
@@ -347,35 +507,123 @@ const Consultation = () => {
         return () => clearInterval(interval); // Cleanup on unmount
     }, []);
     
+    // const leaveChannel = useCallback(async () => {
+    //     try {
+    //         if (localTracks.current.videoTrack) {
+    //             localTracks.current.videoTrack.stop();
+    //             localTracks.current.videoTrack.close();
+    //         }
+    //         if (localTracks.current.audioTrack) {
+    //             localTracks.current.audioTrack.stop();
+    //             localTracks.current.audioTrack.close();
+    //         }
+    
+    //         await client.current.leave();
+    //         setJoined(false);
+    //         setDoctorJoined(false);
+    
+    //         if (channel.current) await channel.current.leave();
+    //         if (rtmClient.current) await rtmClient.current.logout();
+    
+    //     } catch (error) {
+    //         console.error("Error leaving the channel:", error);
+    //     }
+    // }, []);
+    
+
     const leaveChannel = useCallback(async () => {
-        for (let trackName in localTracks.current) {
-            localTracks.current[trackName].stop();
-            localTracks.current[trackName].close();
+        try {
+          // Close video track if it exists
+          if (localTracks.current.videoTrack) {
+            localTracks.current.videoTrack.stop();
+            localTracks.current.videoTrack.close();
+          }
+          
+          // Close audio track if it exists
+          if (localTracks.current.audioTrack) {
+            localTracks.current.audioTrack.stop();
+            localTracks.current.audioTrack.close();
+          }
+          
+          // Reset state
+          localTracks.current = {};
+          
+          // Leave client channel
+          if (client.current) {
+            await client.current.leave();
+          }
+          
+          // Reset states
+          setJoined(false);
+          setDoctorJoined(false);
+          setIsCameraPermissionGranted(false);
+          setIsTokenFetched(false);
+          
+          // Close RTM if using it
+          if (channel.current) await channel.current.leave();
+          if (rtmClient.current) await rtmClient.current.logout();
+          
+        } catch (error) {
+          console.error("Error leaving the channel:", error);
         }
-        await client.current.leave();
-        if (channel.current) await channel.current.leave();
-        if (rtmClient.current) await rtmClient.current.logout();
-        setJoined(false);
-    }, []);
+      }, []);
+    const handleUserPublished = async (user, mediaType) => {
+        console.log("User published:", user, "Media type:", mediaType);
+        
+        await client.current.subscribe(user, mediaType);
+    
+        if (mediaType === "video") {
+            if (remoteVideoRef.current) {
+                console.log("Playing remote video...");
+                user.videoTrack.play(remoteVideoRef.current);
+            } else {
+                console.error("Remote video container is not available");
+            }
+            setDoctorJoined(true);
+        }
+        console.log("Video track before playing:", user.videoTrack);
+
+    
+        if (mediaType === "audio") {
+            user.audioTrack.play();
+        }
+    };
+    const CameraStatus = () => {
+        if (!joined) {
+          return <div className="status-indicator">Not connected</div>;
+        }
+        
+        if (!isCameraPermissionGranted) {
+          return <div className="status-indicator warning">Viewing only (no camera access)</div>;
+        }
+        
+        return <div className="status-indicator success">Connected with camera</div>;
+      };
 
     useEffect(() => {
         const handleUserPublished = async (user, mediaType) => {
             await client.current.subscribe(user, mediaType);
-            if (mediaType === "video" && remoteVideoRef.current) {
-                user.videoTrack.play(remoteVideoRef.current);
+    
+            if (mediaType === "video") {
+                if (remoteVideoRef.current) {
+                    user.videoTrack.play(remoteVideoRef.current);
+                }
                 setDoctorJoined(true);
             }
+    
             if (mediaType === "audio") {
                 user.audioTrack.play();
             }
         };
+    
         client.current.on("user-published", handleUserPublished);
+    
         return () => {
             client.current.off("user-published", handleUserPublished);
             leaveChannel();
         };
     }, [leaveChannel]);
-
+    
     useEffect(() => {
         let interval;
         if (joined) {
@@ -387,14 +635,6 @@ const Consultation = () => {
         }
         return () => clearInterval(interval);
     }, [joined]);
-
-    // const sendMessage = async () => {
-    //     if (channel.current && message.trim()) {
-    //         await channel.current.sendMessage({ text: message });
-    //         setMessages([...messages, { sender: "Me", text: message }]);
-    //         setMessage("");
-    //     }
-    // };
 
     const toggleMute = () => {
         if (localTracks.current.audioTrack) {
@@ -450,104 +690,107 @@ const Consultation = () => {
     };
 
     return (
+        <div className="consultation-page">
         <div className="consultation-container">
+            
             <div className="info-container">
-                <div className="user-info">
-                    {/* <img src={doctor.profilePic} alt="Doctor" className="profile-pic"/> */}
-                    {/* <div>
-                        <h3>{doctor.name}</h3>
-                        <p>{doctor.specialty}</p>
-                    </div> */}
-                </div>
-                <div className="appointment-info">
+                
                     {/* <h4>Appointment Details</h4> */}
                     {/* <p><strong>Patient:</strong> {patient.name}</p> */}
                     {/* <p><strong>Reason:</strong> {patient.reason}</p> */}
                     <p><strong>Date & Time:</strong> {currentTime || "Loading..."}</p>
+                                
 
-
-                </div>
+                
             </div>
             <div className="status-indicator">Doctor Status: {doctorJoined ? "🟢 Online" : "🔴 Offline"}</div>
             <div className="video-container">
-                <div ref={localVideoRef} className="video-frame">
-                <p><strong>Patient:</strong> {patient.name}</p>
-                </div>
-                <div ref={remoteVideoRef} className="video-frame">
-                <p><strong></strong>{doctor.name}, {doctor.specialty}</p>
-                </div>
-            </div>
+            <div className="video-frame">
+    {/* Remote Video */}
+    <video
+            ref={remoteVideoRef}
+            className={`remote-video ${focusedVideo === 'remote' ? 'focused' : ''}`}
+            onClick={() => handleVideoClick('remote')}
+          />
+
+    {/* Local Video */}
+    <video
+            ref={localVideoRef}
+            className={`local-video ${focusedVideo === 'local' ? 'focused' : ''}`}
+            onClick={() => handleVideoClick('local')}
+          />
+          <div className="video-label">
+            {/* {focusedVideo === 'remote' ? 'Patient View' : 'Your View'} */}
+          </div>
+  </div>
+</div>
+
+
             <p>Call Duration: {Math.floor(seconds / 60)}m {seconds % 60}s</p>
             <div className="button-container">
-                <button className="button" onClick={toggleMute}>{isMuted ? "Unmute" : "Mute"}</button>
-                <button className="button" onClick={toggleVideo}>{isVideoEnabled ? "Disable Video" : "Enable Video"}</button>
-                <button className="button" onClick={toggleScreenShare}>{isScreenSharing ? "Stop Sharing" : "Share Screen"}</button>
-                <button className="button" onClick={toggleRecording}>{isRecording ? "Stop Recording" : "Start Recording"}</button>
-                <button className="button" onClick={() => setChatOpen(!chatOpen)}>Chat</button>
-                <button className="button" onClick={() => setNotesOpen(!notesOpen)}>Notes</button>
-                <button className="button" onClick={() => document.getElementById("fileInput").click()}>Upload Document</button>
-                <input type="file" id="fileInput" style={{ display: "none" }} onChange={handleFileUpload} />
+                {!joined ? (
+                    <button className="button join-button" onClick={joinChannel}>Join Call</button>
+                ) : (
+                    <>
+                        <button className="button" onClick={toggleMute} title="Toggle Mute">
+                        {isMuted ? <FiMicOff size={20} /> : <FiMic size={20} />}
+                        </button>
 
-                <button className="button leave-button" onClick={() => window.location.reload()}>End Call</button>
+                        <button className="button" onClick={toggleVideo} title="Toggle Video">
+                        {isVideoEnabled ? <FiVideo size={20} /> : <FiVideoOff size={20} />}
+                        </button>
+
+                        <button className="button" onClick={toggleScreenShare} title="Toggle Screen Share">
+                        {isScreenSharing ? <FiMonitor size={20} /> : <FiMonitor size={20} color="black" />}
+                        </button>
+
+                        {/* <button className="button" onClick={toggleRecording} title="Toggle Recording">
+                        {isRecording ? <FiStopCircle /> : <FiCircle />}
+                        </button> */}
+
+                        {/* <button className="button leave-button" onClick={() => leaveChannel().then(() => window.location.reload())} title="End Call"> */}
+                        <button className="button leave-button" onClick={handleCallEnd} title="End Call">
+    <FiPhoneOff size={20} />
+</button>
+
+                    </>
+                    )}
             </div>
-            {/* File Input (Hidden) */}
-            <input
-                type="file"
-                id="fileInput"
-                style={{ display: "none" }}
-                onChange={handleFileUpload}
-            />
-            {/* Chat Box */}
-            {/* Chat Box */}
-            {chatOpen && (
-                <div className="chat-box">
-                    <h3>Chat</h3>
-                    <div className="chat-messages">
-                        {chatMessages.map((msg, index) => (
-                            <p key={index}><strong>{msg.sender}:</strong> {msg.text}</p>
-                        ))}
-                    </div>
-                    <div className="chat-input">
-                        <input
-                            type="text"
-                            value={chatInput}
-                            onChange={(e) => setChatInput(e.target.value)}
-                            placeholder="Type a message..."
-                        />
-                        <button className="button" onClick={sendMessage}>Send</button>
-                    </div>
-                </div>
-            )}
-
-
-            {/* Notes Section */}
-            {notesOpen && (
-                <div className="notes-box">
-                    <h3>Notes</h3>
-                    <textarea
-                        value={noteText}
-                        onChange={(e) => setNoteText(e.target.value)}
-                        placeholder="Write your note..."
-                    />
-                    <button className="button" onClick={addNote}>Add Note</button>
-                    <ul>
-                        {notes.map((note, index) => (
-                            <li key={index}>{note}</li>
-                        ))}
-                    </ul>
-                </div>
-            )}
-
-            {/* Uploaded File Display */}
-            {uploadedFile && (
-    <div className="file-box">
-        <p>Uploaded: <strong>{uploadedFile.name}</strong></p>
-        <a href={uploadedFile.url} target="_blank" rel="noopener noreferrer">View File</a>
-    </div>
-)}
-
         </div>
+
+        {joined && (
+            <div className="consultation-tabs">
+                <div className="tab-header">
+                    <button id="b1"
+                        className={activeTab === 'chat' ? 'active' : ''}
+                        onClick={() => setActiveTab('chat')}
+                    >
+                        Chat
+                    </button>
+                    <button id="b2"
+                        className={activeTab === 'notes' ? 'active' : ''}
+                        onClick={() => setActiveTab('notes')}
+                    >
+                        Notes
+                    </button>
+                    <button id="b3"
+                        className={activeTab === 'docs' ? 'active' : ''}
+                        onClick={() => setActiveTab('docs')}
+                    >
+                        Docs
+                    </button>
+                </div>
+                {renderTabContent()}
+            </div>
+        )}
+
+
+    </div>
+
     );
+
+
+
 };
 
 export default Consultation;

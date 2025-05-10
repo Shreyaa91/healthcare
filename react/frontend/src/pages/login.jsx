@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link,useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./login1.css"; // Ensure this CSS file matches your given styles
-
+import "./login1.css"; 
+import logo from './logo.jpg';
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -51,11 +51,28 @@ const handleLogin = async () => {
 
       localStorage.setItem("token", response.data.access_token);
       localStorage.setItem("user_role", response.data.role);
+
+      // Fetch user details after login
+    const userResponse = await axios.get("http://localhost:8000/user/me", {
+      headers: { Authorization: `Bearer ${response.data.access_token}` },
+    });
+
+    localStorage.setItem("user", JSON.stringify(userResponse.data));
+
       alert("Login successful!");
-      navigate("/appointments");
+      navigate("/appointment");
   } catch (err) {
-      console.error("Login error:", err);
-      setError("Invalid email or password");
+    console.error("Login error:", err);
+  
+    const detail = err.response?.data?.detail;
+  
+    if (detail === "Invalid User ID") {
+      setError("Invalid User ID");
+    } else if (detail === "Invalid password") {
+      setError("Invalid Password");
+    } else {
+      setError("Login failed. Please try again.");
+    }
   }
 };
 
@@ -64,7 +81,7 @@ const handleLogin = async () => {
    
 
   <div className="container-login">
-        
+    <img id="logo"src={logo} alt="Logo" />
     <div className="login">
         <form onSubmit={(e) => e.preventDefault()}>
           <div>
@@ -113,7 +130,8 @@ const handleLogin = async () => {
         </form>
         <div className="last">
           
-              <a id="a"href="#">Forgot password?</a>        
+              {/* <a id="a"href="#">Forgot password?</a>  */}
+              <Link id="a" to="/forgot_password">Forgot password?</Link>       
               <Link id="signup" to="/signup">Signup</Link>
         </div>
     </div>

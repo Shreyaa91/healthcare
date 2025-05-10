@@ -1,0 +1,283 @@
+.cart-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 60px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+    width:1521px;
+    
+    /* margin-top:-300px; */
+  }
+  
+  .Header{
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white;
+    padding: 10px 30px !important; 
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width:1460px !important;
+    height:70px;
+    /* margin-top: -60px; */
+  }
+
+  .cart-page h1 {
+    font-size: 28px;
+    color: #101340;
+    margin-bottom: 20px;
+  }
+  
+  .cart-heading{
+    margin-top:60px;
+    /* margin-left:-105px; */
+    margin-right:1040px;
+    background: transparent;
+  }
+  .cart-page img {
+  padding-left: 30px;
+  width:50px;
+    margin-left: 10px;
+  }
+  
+  .cart-empty-text {
+    font-size: 20px;
+    color: #101340;
+    margin-bottom: 8px;
+    background: transparent;
+  }
+  
+  .cart-subtext {
+    color: #777;
+    font-size: 16px;
+    text-align: center;
+    max-width: 300px;
+    background: transparent;
+  }
+  
+  .cart-add-btn {
+    margin-top: 50px;
+    background-color: #00b9bc;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 12px 30px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+    width:30%;
+    transition: background-color 0.3s ease;
+  }
+  
+  .cart-add-btn:hover {
+    background-color: #009ea0;
+  }
+
+  
+  .mediCart {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2e1f63;
+    padding-left: -20px !important;
+  }
+  
+  .Search-bar {
+    margin: 0 40px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    width:600px;
+    margin-left: 10px;
+  }
+  
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .auth-btn {
+    background-color: #00b894;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .cart-btn {
+    padding: 8px 14px;
+    cursor: pointer;
+  }
+  
+  .auth-btn:hover {
+    background-color: #009879;
+  }
+  .Logo{
+    width:50px !important;
+    /* padding-right: -70px; */
+    padding-left: 50px;
+    margin-left: 10px;
+    padding-top: 20px;
+    color:black;
+  }
+  .cart{
+    padding-right: 20px;
+  }
+
+  /* Two-column layout for cart with items */
+.cart-container {
+  display: flex;
+  gap: 4rem;
+  background: transparent;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+/* LEFT COLUMN - Product List */
+.cart-products {
+  flex: 2;
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 700px;
+}
+
+/* RIGHT COLUMN - Payment Summary */
+.payment-summary {
+  flex: 1;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  min-width: 400px;
+  max-height: 800px;
+}
+
+/* Section headings */
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+/* Each product card */
+.product-card {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.delivery-text {
+  font-size: 12px;
+  color: #777;
+}
+
+/* Quantity dropdown */
+.product-card select {
+  padding: 5px 10px;
+  font-size: 14px;
+}
+
+/* Add more items button */
+.add-more-btn :hover {
+  margin-top: 20px;
+  background: none;
+  color: #007aff;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 15px;
+  /* margin-top:30px; */
+}
+
+/* Payment breakdown lines */
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.total {
+  font-weight: 600;
+  color: #1abc9c;
+}
+
+/* Green savings text */
+.green-text {
+  color: green;
+}
+
+/* Savings box */
+.savings-box {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 15px;
+  font-weight: 500;
+}
+
+/* Proceed to checkout button */
+.proceed-btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 20px;
+  background-color: #1abc9c;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  margin-left:4px;
+}
+
+.proceed-btn:hover {
+  background-color: #17a589;
+}
+
+.cart-icon-container {
+  position: relative;
+  display: inline-block;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background: red;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
+}
+.Upload-icon-container {
+  display: flex;
+  align-items: center;
+  margin-right: -40px;
+}
+
+.upload-label-icon {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.upload-text {
+  margin-left: 5px;
+  font-size: 14px;
+}
+
+#quantity{
+  color:black;
+}

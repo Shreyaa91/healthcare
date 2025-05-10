@@ -1,0 +1,134 @@
+.medical-records-container{
+    display: flex;
+    height: 105vh;
+    width:99vw;
+    
+    
+    margin-top:50px;
+   padding-left:20px;
+    margin-right: 80px;
+    margin-left: 50px;;
+  }
+.sidebar {
+    width: 300px;
+    background-color: #1f2937;
+    color: white;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    margin-right:20px;
+    
+  }
+  
+  .sidebar h2 {
+    margin-bottom: 20px;
+  }
+  
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+    background-color: none;
+    background-color: #1f2937;
+  }
+  
+  .sidebar ul li {
+    padding: 10px 15px;
+    cursor: pointer;
+    /* border-radius: 5px; */
+    font-size: 20px;
+    
+    margin-bottom:20px;
+    background-color: #1f2937;
+  }
+  
+  .sidebar ul li.active,
+  .sidebar ul li:hover {
+    background-color: #3b82f6;
+  }
+  
+  .records-main {
+    flex: 1;
+    padding: 30px;
+  }
+  
+  .records-main h2 {
+    margin-bottom: 20px;
+    text-align: left;
+  }
+  
+  .records-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 30px;
+  }
+  
+  .record-card {
+    background: #f0f0f0; /* light grey */
+    height: 140px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 15px;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+  
+  .record-card:hover {
+    background-color: #e0e0e0; /* slightly darker grey on hover */
+    transform: translateY(-4px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+  }
+  
+  .record-card a {
+    color: #1a73e8;
+    /* color: #1a6cd7; */
+    text-decoration: none;
+    font-weight: 500;
+    word-break: break-word;
+    background-color: transparent;
+  }
+  
+  .upload-section {
+    display: flex;
+    /* background-color: #1a73e8; */
+    
+    align-items: center;
+    /* gap: 0px; */
+    margin-top: 10px;
+    gap:20px;
+    margin-bottom: 15px;
+  }
+  
+  .upload-section input[type="file"] {
+    border: 1px solid #ccc;
+    padding: 6px;
+    border-radius: 4px;
+
+  }
+  
+  .upload-section button {
+    /* background-color: #1ab394;
+    background-color: #218838; */
+    background-color: #4c8558;
+    color: white;
+    padding: 8px 14px;
+    border: none;
+    margin-bottom: 30px;;
+    width:20%;
+    border-radius: 4px;
+    cursor: pointer;
+    align-self:center;
+  }
+  
+  .upload-section button:disabled {
+    background: #2051a1 
+  }
+  
+  .error-message {
+    color: red;
+    margin-top: 10px;
+  }
+  

@@ -86,16 +86,15 @@ form label {
   font-weight: 600;
 }
 
-form input {
-  border-radius: 1.2vw;
-  height: 4vw;
-  background-color: rgba(255, 255, 255, 0.3);
-  padding: 1vw;
-  outline: none;
-  color: white;
-  font-size: 1.6rem; /* Use rem for better scaling */
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  transition: all 0.3s;
+input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  color:black;
+  box-sizing: border-box;
 }
 
 form input:focus {
@@ -182,3 +181,4 @@ form input:focus {
   margin-top: 2vw;
   text-align: center; /* Center text for better mobile view */
 }
+

@@ -1,0 +1,174 @@
+
+.appointment-container {
+    display: flex;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+  }
+  
+
+  
+  /* Main page layout */
+  .appointment-page {
+    display: flex;
+    flex: 1;
+    padding: 20px;
+    gap: 20px;
+    overflow-x: auto;
+  }
+  
+  /* Doctor list column */
+  .appointment-content {
+    width: 50%;
+    min-width: 300px;
+  }
+  
+  .doctors-list {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    display: grid; /* Use grid layout */
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Responsive grid with minimum 250px width per card */
+    gap: 30px; /* Add space between the cards */
+    width: 200%;
+    border-radius: 8px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05);
+  }
+  
+  .doctor-card {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Align content to the start */
+    justify-content: space-between; /* Distribute space evenly */
+    height: 100%;
+  }
+.doctor-card:hover {
+  background-color: #f7faff; /* light blue-ish hover */
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* slightly bigger shadow */
+  transform: translateY(-2px); /* subtle lift effect */
+}
+  
+  .doctor-card.selected {
+    border: 2px solid #007bff;
+    background-color: #e6f0ff;
+   
+  }
+  .doctor-card.selected h3,
+.doctor-card.selected p {
+  background: transparent; /* Make sure inner text background is transparent */
+}
+
+.doctor-card:hover h3,
+.doctor-card:hover p {
+  background: transparent; /* Make sure inner text background is transparent */
+}
+  
+  /* Doctor details + slots column */
+  .doctor-details {
+    width: 80%;
+    min-width: 300px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-top:-20px;
+    margin-right:30px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    font-size:18px;
+  }
+#name,#slots
+{
+    font-size: 20px;
+    margin-top:15px
+    
+}
+  .slots-container {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .slot-item {
+    display: flex;
+    flex-direction:column;
+    gap:5px;
+    align-items: center;
+    background-color: #f6f6f6;
+    padding: 10px;
+    margin-bottom:10px;
+    border-radius: 5px;
+  }
+  
+
+  .slot-time {
+    font-size: 18px;
+    width:100%;
+    height:100%;
+    background-color: transparent;
+  }
+
+
+
+  .slot-time h5{
+    display:inline;
+    margin-right:10px;
+    margin-bottom:11px;
+    font-size:18px;
+    background-color: transparent;
+  }
+  
+  .book-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .book-button:hover {
+    background-color: #0056b3;
+  }
+  
+
+  .left-column{
+    flex-direction:column;
+    width:150%;
+    margin-top:-20px;
+    height:auto;
+   
+    padding-top:15px;
+    padding-right:10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    
+  }
+    .filters {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .search-bar, .specialization-filter {
+      padding: 8px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      margin-left: 20px;
+      
+    }
+    
+.filters input{
+  color:black
+}
+
+.specialization-filter{
+  color: black;
+}

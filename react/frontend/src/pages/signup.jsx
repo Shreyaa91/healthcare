@@ -4,6 +4,7 @@ import api from "../api";
 import './signup.css'
 
 const Signup = ({ setPage }) => {
+  const navigate=useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -13,7 +14,8 @@ const Signup = ({ setPage }) => {
     username: "",
     password: "",
     role:"patient",
-    speciality:""
+    speciality:"",
+    experience:""
   });
   const [error, setError] = useState("");
 
@@ -32,17 +34,15 @@ const Signup = ({ setPage }) => {
     try {
       const response = await api.post("/signup", formData);
       alert(response.data.message); // Show the success message
-      setPage("login"); // Redirect to login page
+      navigate("/");
     } catch (err) {
       console.error("Signup Error:", err.response ? err.response.data : err.message);
-  
+    
       // Display the actual backend error message if available
-      if (err.response && err.response.data && err.response.data.detail) {
-        setError(err.response.data.detail);
-      } else {
-        setError("Signup failed. Try again.");
-      }
+      const errorMsg = err?.response?.data?.detail || "Signup failed. Try again.";
+      setError(errorMsg);
     }
+    
   };
   
 
@@ -50,7 +50,7 @@ const Signup = ({ setPage }) => {
     <div className="container">
       <div className="signup">
       <h2>Create New Account</h2>
-      {error && <p style={{ color: "red", textAlign:"center"}}>{error}</p>}
+      {error && <p style={{ color: "red", textAlign:"center",marginRight:"20px"}}>{error}</p>}
       <form onSubmit={handleSubmit}>
         <div>
       {/* <label htmlFor="name">Name</label> */}
@@ -62,21 +62,30 @@ const Signup = ({ setPage }) => {
         </div>
         <div>
         {/* <label htmlFor="age">Age</label> */}
-        <input id="age" type="number" name="age" placeholder="Age" onChange={handleChange} required />
+        <input id="age" type="number" name="age" placeholder="Age" min="1" onChange={handleChange} required />
         </div>
         <div>
         {/* <label htmlFor="ph_no">Phone Number</label> */}
-        <input id="ph_no" type="number" name="phone" placeholder="Phone Number" onChange={handleChange} required />
+        <input
+  id="ph_no"
+  type="tel"
+  name="phone"
+  placeholder="Phone Number"
+  onChange={handleChange}
+  pattern="\d{10}"
+  maxLength="10"
+  required
+/>
         </div>
         <div>
         <label>Gender</label>
         <div className="gender">
-          <div id="radio1">
+          <div id="radio3">
           <input type="radio" id="male" name="gender"  value="male" onChange={handleChange} defaultChecked/>
           <label htmlFor="male">Male</label>
           </div>
 
-          <div id="radio2">
+          <div id="radio4">
           <input type="radio" id="female" name="gender" value="female" onChange={handleChange}/>
           <label htmlFor="female">Female</label>
           </div>
@@ -105,8 +114,18 @@ const Signup = ({ setPage }) => {
     <input 
       type="text" 
       name="specialty" 
-      placeholder="Enter Specialty" 
+      id="speciality"
+      placeholder="Enter Speciality" 
       onChange={handleChange} 
+      required 
+    />
+       <input 
+      type="number" 
+      name="experience" 
+      id="experience"
+      placeholder="Years of Experience" 
+      onChange={handleChange} 
+      min="0"
       required 
     />
   </div>
@@ -120,7 +139,7 @@ const Signup = ({ setPage }) => {
         <input id="password" type="password" name="password" placeholder="Password" onChange={handleChange} required />
         </div>
         <div>
-        <button type="submit">Signup</button>
+        <button id="signup-btn" type="submit">Signup</button>
         </div>
         <p id="log">Have an account? <Link id="login" to="/">Login</Link> </p>
       </form>

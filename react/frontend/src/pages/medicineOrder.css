@@ -1,0 +1,326 @@
+.medicine-container {
+    font-family: Arial, sans-serif;
+    /* max-width: 900px; */
+    /* margin: auto; */
+   
+    /* margin-left:300px;; */
+    /* width:100vw; */
+    /* margin-top:-300px; */
+  }
+  #heading{
+    margin-top:100px;
+    margin-bottom:100px;
+  }
+  h1, h2 {
+    text-align: center;
+    color: #333;
+  }
+  
+  .medicine-list {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin: 20px 0;
+  }
+  
+  .medicine-card {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 10px;
+    width: 200px;
+    margin: 10px;
+    box-shadow: 0px 0px 8px #ccc;
+    text-align: center;
+  }
+  .medicine-card h3{
+    background: transparent;
+  }
+   .medicine-card p{
+    background: transparent;
+  }
+  
+  button {
+    padding: 8px 12px;
+    margin-top: 10px;
+    background-color: #007bff;
+    color: white;
+    margin-left:18px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  } 
+  
+  #search-bar{
+    color:black;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  } 
+  
+  .upload-section {
+    margin: 20px 0;
+    text-align: center;
+  }
+  
+  .cart-section {
+    background-color: #f1f1f1;
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 30px;
+  }
+  
+  .remove-btn {
+    background-color: #dc3545;
+    margin-left: 10px;
+  }
+  
+  .pay-btn {
+    background-color: #28a745;
+    width: 100%;
+    margin-top: 15px;
+    font-size: 16px;
+  }
+  
+  .file-name {
+    font-style: italic;
+    margin-top: 5px;
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white;
+    padding: 15px 30px; 
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width:1430px;
+    margin-top: -230px;
+    height:70px;
+  }
+  
+  .MediCart {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2e1f63;
+    padding-left: 50px;
+  }
+  
+  .search-bar {
+    margin: 0 40px;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    width:600px;
+  }
+  
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .auth-btn {
+    background-color: #00b894;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .cart-btn {
+    padding: 8px 14px;
+    cursor: pointer;
+  }
+  
+  .auth-btn:hover {
+    background-color: #009879;
+  }
+  .logo{
+    width:50px;
+    /* padding-right: -70px; */
+    padding-left: 30px;
+    margin-left: 10px;
+  }
+  .cart{
+    padding-right: 20px;
+  }
+  
+  .cart-icon-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    background: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1;
+  }
+  .upload-icon-container {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+  }
+  
+  .upload-label-icon {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .upload-text {
+    margin-left: 5px;
+    font-size: 14px;
+  }
+  
+  .search-container {
+    position: relative;
+    width: 400px;
+    margin: 20px;
+  }
+  
+  .search-bar {
+    width: 100%;
+    padding: 10px 16px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    outline: none;
+  }
+  
+  .suggestion-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #eee;
+    border-top: none;
+    max-height: 250px;
+    margin-left:40px;
+    overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    z-index: 10;
+    border-radius: 0 0 8px 8px;
+  }
+  
+  .suggestion-item {
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 15px;
+    border-bottom: 1px solid #f2f2f2;
+  }
+  
+  .suggestion-item:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .view-all {
+    padding: 10px 16px;
+    color: #00a8ec;
+    font-weight: 600;
+    text-align: right;
+    cursor: pointer;
+  }
+  /* Search container */
+  .search-container {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    margin: 10px auto;
+  }
+  
+  /* Search input box */
+  .search-bar {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    outline: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Dropdown suggestion box */
+  .suggestion-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-top: none;
+    z-index: 1000;
+    border-radius: 0 0 8px 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Each suggestion item */
+  .suggestion-item {
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background-color 0.2s;
+  }
+  
+  /* Hover effect */
+  .suggestion-item:hover {
+    background-color: #f0f0f0;
+  }
+  
+  /* "View All" button */
+  .view-all {
+    padding: 10px 14px;
+    font-weight: bold;
+    text-align: center;
+    background-color: #f7f7f7;
+    cursor: pointer;
+    border-top: 1px solid #eee;
+  }
+  
+  .view-all:hover {
+    background-color: #e6f2ff;
+  }
+  
+  .profile-menu-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: -2px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    z-index: 10;
+    min-width: 120px;
+  }
+  
+  .dropdown-item {
+    padding: 10px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+  }
+  
+  .dropdown-item:hover {
+    background-color: #f5f5f5;
+  }
