@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./book_appointment.css"
-
+import profilelogo from "./image.png";
 const BookAppointment = ({user}) => {
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
@@ -105,12 +105,17 @@ const BookAppointment = ({user}) => {
       <div className="sidebar">
         <ul>
         <li onClick={()=>navigate('/appointment')}className="active">Appointments</li>
-        <li onClick={()=>navigate('/consultation')}>Consultation</li>
+        {/* <li onClick={()=>navigate('/consultation')}>Consultation</li> */}
         <li onClick={()=>navigate('/medicalrecords')}>Medical Records</li>
         <li onClick={()=>navigate('/medicineordering')}>E-Pharmacy</li>
         <li onClick={()=>navigate('/payment')}>Billing</li>
-        <li onClick={()=>navigate('/appointment')}>Settings</li>
+        <li onClick={() => navigate('/appointment')}>Feedback</li>
+        {/* <li onClick={()=>navigate('/appointment')}>Settings</li> */}
         </ul>
+    <div className="image" onClick={()=>navigate('/profile')}>
+               <img id="profile-icon" src={profilelogo}></img>
+               <p id="profile-username">{user?.username}</p>
+              </div>
       </div>
   
       <div className="appointment-page">
@@ -177,6 +182,7 @@ const BookAppointment = ({user}) => {
               <h3 id="name">Dr. {selectedDoctor.name}</h3>
               <p>Specialization: {selectedDoctor.specialization}</p>
               <p>Experience: {selectedDoctor.experience} years</p>
+              <p>About: {selectedDoctor.about?selectedDoctor.about:"None"} </p>
               
               <h3 id="slots">Available Slots</h3>
               <div className="slots-container">

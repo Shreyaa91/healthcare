@@ -5,10 +5,24 @@
     font-family: Arial, sans-serif;
   }
   
-
+.sidebar {
+    width: 300px;
+    background-color: #1f2937;
+    color: white;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    
+    position: fixed;
+    height:100vh;
+    margin-right:50px;
+    margin-left:-10px;
+    
+  }
   
   /* Main page layout */
   .appointment-page {
+    margin-left:300px;
     display: flex;
     flex: 1;
     padding: 20px;
@@ -171,4 +185,29 @@
 
 .specialization-filter{
   color: black;
+}
+
+#profile-icon{
+  width:70px;
+  height:70px;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+object-fit: cover;
+  background: transparent;
+}
+
+.image{
+  padding-left: 10px;;
+  display: flex;
+  justify-content: flex-start;
+  background: transparent;
+  align-items: center;
+  margin-top: auto;
+
+}
+
+#profile-username{
+  background: transparent;
+  margin-left:20px;
 }

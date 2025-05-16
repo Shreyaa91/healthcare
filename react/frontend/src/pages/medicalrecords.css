@@ -4,7 +4,7 @@
     width:99vw;
     
     
-    margin-top:50px;
+    margin-top:10px;
    padding-left:20px;
     margin-right: 80px;
     margin-left: 50px;;
@@ -16,7 +16,10 @@
     padding: 20px;
     display: flex;
     flex-direction: column;
-    margin-right:20px;
+    
+    position: fixed;
+    height:100vh;
+    margin-right:50px;
     
   }
   
@@ -47,6 +50,7 @@
   }
   
   .records-main {
+    margin-left:300px;
     flex: 1;
     padding: 30px;
   }
@@ -131,4 +135,36 @@
     color: red;
     margin-top: 10px;
   }
+  #profile-icon{
+  width:70px;
+  height:70px;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+object-fit: cover;
+  background: transparent;
+}
+
+.image{
+  padding-left: 10px;;
+  display: flex;
+  justify-content: flex-start;
+  background: transparent;
+  align-items: center;
   
+
+}
+
+#profile-username{
+  background: transparent;
+  margin-left:20px;
+}
+
+input[type="file"] {
+  display: block;
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
+}

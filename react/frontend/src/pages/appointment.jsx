@@ -4,10 +4,11 @@ import "./appointment.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-
+import profilelogo from "./image.png";
 
 
 const AppointmentPage = ({ user }) => {
+  const token=localStorage.getItem("token");
   const navigate = useNavigate();
   const [doctors, setDoctors] = useState([]);
   const [schedule, setSchedule] = useState([]);
@@ -378,12 +379,17 @@ return (
     <div className="sidebar">
       <ul>
         <li onClick={()=>navigate('/appointment')}className="active">Appointments</li>
-        <li onClick={()=>navigate('/consultation')}>Consultation</li>
+        {/* <li onClick={()=>navigate('/consultation')}>Consultation</li> */}
         <li onClick={()=>navigate('/medicalrecords')}>Medical Records</li>
         <li onClick={()=>navigate('/medicineordering')}>E-Pharmacy</li>
         <li onClick={()=>navigate('/payment')}>Billing</li>
-        <li onClick={()=>navigate('/appointment')}>Settings</li>
+        {/* <li onClick={()=>navigate('/appointment')}>Settings</li> */}
+        <li onClick={() => navigate('/appointment')}>Feedback</li>
       </ul>
+         <div className="image" onClick={()=>navigate('/profile')}>
+             <img id="profile-icon" src={profilelogo}></img>
+             <p id="profile-username">{user?.username}</p>
+            </div>
     </div>
 
     {/* Main Content */}
@@ -742,7 +748,7 @@ return (
 
               {showScheduleForm && (
                 <div className="schedule-form">
-                  { <label htmlFor="available_date">Date</label>
+                  { <label  className="label-create-schedule" htmlFor="available_date">Date</label>
                   /*<input
                     id="available_date"
                     type="date"
@@ -763,7 +769,7 @@ return (
   placeholderText="Select a date"
 />
 <br/>
-                  <label htmlFor="start_time">Start Time</label>
+                  <label  className="label-create-schedule" htmlFor="start_time">Start Time</label>
                   <input
                     id="start_time"
                     type="time"
@@ -772,7 +778,7 @@ return (
                     onChange={handleInputChange}
                     required
                   />
-                  <label htmlFor="end_time">End Time</label>
+                  <label  className="label-create-schedule" htmlFor="end_time">End Time</label>
                   <input
                     id="end_time"
                     type="time"

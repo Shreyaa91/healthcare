@@ -1,0 +1,269 @@
+body{
+  height:max-content;
+}
+.main-container {
+  display: flex;
+  min-height: 100vh;
+  font-size: 20px;
+  overflow-y: auto; 
+  height:auto;
+  /* background-color: #f3f4f6; */
+  /* margin-top:10px; */
+}
+
+ .main-container .sidebar {
+  width: 300px;
+  background-color: #1f2937;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0.5%;
+  top: 0.5%;
+  height: 100vh;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  margin-top:1px;
+  margin-left:-5px;
+ 
+  
+}
+
+.profile-wrapper {
+  margin-left: 300px; /* Same as sidebar width */
+  padding-left: 40px; /* This creates the gap you want */
+  width: calc(100% - 250px);
+  flex: 1;
+}
+
+.profile-container {
+    min-height:90vh;
+    font-size: 20px;
+  /* max-width: 800px; */
+  
+  /* background-color: rgb(166, 80, 80); */
+  
+  border-radius: 10px;
+  padding: 2rem;
+  margin: 2rem 0;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.05);
+  width:30vw;
+  margin-left: -200px;;
+  
+}
+
+/* Rest of your existing styles... */
+.profile-container h2 {
+  color: #111827;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  font-weight: 600;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 1rem;
+  
+}
+
+.profile-container p {
+  margin: 1rem 0;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: #4b5563;
+}
+
+.profile-container strong {
+  color: #111827;
+  margin-right: 0.5rem;
+  font-weight: 600;
+}
+
+.profile-field {
+  margin: 1.5rem 0;
+  color: black;
+}
+
+.profile-field label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #111827;
+}
+
+.profile-field input,
+.profile-field textarea
+.profile-field select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  color:black;
+}
+
+.profile-field input:focus,
+.profile-field textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.profile-field textarea {
+  min-height: 120px;
+  resize: vertical;
+  color:#111827;
+}
+.profile-gender {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: white;
+  font-size: 14px;
+  height:45px;
+  color:black;
+}
+
+.profile-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.main-container button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+
+.main-container button:hover {
+  transform: translateY(-1px);
+}
+
+.main-container button:first-of-type {
+  background-color: #1653b5;
+  color: rgb(12, 11, 11);
+  color:white
+}
+
+.main-container button:first-of-type:hover {
+  background-color: #18377b;
+  color:white;
+}
+
+.main-container button:nth-of-type(2) {
+  background-color: #ef4444;
+  color: white;
+}
+
+.main-container button:nth-of-type(2):hover {
+  background-color: #dc2626;
+  
+}
+
+.logout-button {
+  background-color: #6b7280;
+  color: white;
+ width:50%;
+  margin:auto;
+  margin-top:20px;
+  display: flex;
+  justify-content: center;
+}
+
+.logout-button:hover {
+  background-color: #4b5563;
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background-color: #e5e7eb;
+  margin: 2rem 0;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+  .main-container .sidebar {
+    width: 250px;
+    
+  }
+  
+  .profile-container {
+    /* margin-left: 0px; */
+    width:50vw;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-container .sidebar {
+    width: 120%;
+    
+    position: relative;
+    height: auto;
+  }
+  
+  .profile-wrapper {
+    margin-left: 280px;;
+    padding-left: 20px;
+    padding-right: 20px;
+    width: 100%;
+  }
+}
+@media (max-width: 480px) {
+  .profile-buttons {
+    flex-direction: column;
+  }
+  
+  button {
+    width: 100%;
+    
+  }
+  
+  .main-container .sidebar ul {
+    flex-direction: column;
+    gap: 0;
+  }
+}
+#edit-profile{
+  width:90%;
+  margin:auto;
+  margin-top:50px;
+  display: flex;
+  justify-content: center;
+}
+
+#profile-icon{
+  width:70px;
+  height:70px;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+object-fit: cover;
+  background: transparent;
+}
+
+.image{
+  padding-left: 10px;;
+  display: flex;
+  justify-content: flex-start;
+  background: transparent;
+  align-items: center;
+  margin-top: auto;
+
+}
+
+.image:hover{
+  /* background-color: #ccc;
+  transition:all 0.1s; */
+  cursor:pointer
+}
+
+#profile-username{
+  background: transparent;
+  margin-left:20px;
+}

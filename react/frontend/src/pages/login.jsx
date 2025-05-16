@@ -79,7 +79,7 @@ const handleLogin = async () => {
 
   return (
    
-
+<div className="login-main">
   <div className="container-login">
     <img id="logo"src={logo} alt="Logo" />
     <div className="login">
@@ -135,6 +135,7 @@ const handleLogin = async () => {
               <Link id="signup" to="/signup">Signup</Link>
         </div>
     </div>
+  </div>
   </div>
     
   );

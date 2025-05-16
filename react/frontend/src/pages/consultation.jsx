@@ -6,9 +6,9 @@ import {io} from 'socket.io-client';
 import { FiMic, FiMicOff, FiVideo, FiVideoOff, FiMonitor, FiStopCircle, FiPhoneOff, FiCircle } from "react-icons/fi";
 
 
-const Consultation = (user) => {
+const Consultation = ({user}) => {
     console.log("USER:",user);
-    const userID=user.id;
+    const userID = user?.id;
     
     const navigate=useNavigate();
     console.log("USER ID:",userID);
@@ -307,7 +307,9 @@ const sendMessage = () => {
       <strong>{msg.sender === userID ? 'Me' : 'Them'}:</strong> {msg.text}
     </li>
   ))}
-</ul> */}<ul id="chat-msg">
+</ul> */}
+
+{/* <ul id="chat-msg">
   {chatMessages.map((msg, index) => {
     console.log("msg.sender:", msg.sender, "userID:", userID, "Equal:", msg.sender.user === userID.user);
     
@@ -317,7 +319,23 @@ const sendMessage = () => {
       </li>
     );
   })}
+</ul> */}
+<ul id="chat-msg">
+  {chatMessages.map((msg, index) => {
+    const isMe = msg.sender === userID;
+    return (
+      <li
+        key={index}
+        className={`chat-message ${isMe ? 'sent' : 'received'}`}
+      >
+        <div className="message-bubble">
+          <strong>{isMe ? 'Me' : 'Them'}:</strong> {msg.text}
+        </div>
+      </li>
+    );
+  })}
 </ul>
+
 
                     <div id="place-at-bottom">
                     <textarea id="chat-text-area"

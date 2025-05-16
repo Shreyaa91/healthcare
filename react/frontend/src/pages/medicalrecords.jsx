@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import './medicalrecords.css'
 import { useNavigate } from "react-router-dom";
+import profilelogo from "./image.png";
 
-const MedicalRecords = ({ userId }) => {
+const MedicalRecords = ({ userId,user}) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [records, setRecords] = useState([]);
   const [uploading, setUploading] = useState(false);
@@ -16,7 +17,7 @@ const MedicalRecords = ({ userId }) => {
       setLoading(true);
       const token = localStorage.getItem("token");
       if (!token) {
-        navigate('/login');
+        navigate('/');
         return;
       }
 
@@ -35,9 +36,10 @@ const MedicalRecords = ({ userId }) => {
   };
 
   const handleUpload = async () => {
+    console.log("INSIDE HANDLE")
     const token = localStorage.getItem("token");
     if (!token) {
-      navigate('/login');
+      navigate('/');
       return;
     }
 
@@ -86,12 +88,16 @@ const MedicalRecords = ({ userId }) => {
       <div className="sidebar">
         <ul>
           <li onClick={() => navigate('/appointment')}>Appointments</li>
-          <li onClick={() => navigate('/consultation')}>Consultation</li>
+          {/* <li onClick={() => navigate('/consultation')}>Consultation</li> */}
           <li className="active">Medical Records</li>
           <li onClick={() => navigate('/medicineordering')}>E-Pharmacy</li>
           <li onClick={() => navigate('/payment')}>Billing</li>
-          <li onClick={() => navigate('/appointment')}>Settings</li>
+          <li onClick={() => navigate('/appointment')}>Feedback</li>
         </ul>
+           <div className="image" onClick={()=>navigate('/profile')}>
+               <img id="profile-icon" src={profilelogo}></img>
+               <p id="profile-username">{user?.username}</p>
+              </div>
       </div>
   
       <div className="records-main">

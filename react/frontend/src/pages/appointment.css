@@ -130,6 +130,7 @@ html,body{
       display: flex;
       flex-direction: column;
       margin-right:10px;
+      margin-top: -5px;
       
     }
     
@@ -160,6 +161,7 @@ html,body{
     }
     
     .content {
+      margin-left: 300px;;
       flex: 1;
       padding: 20px;
       overflow-y: auto;
@@ -245,7 +247,7 @@ html,body{
     }
     
     .schedule-form {
-      margin-top: 10px;
+      margin-top: 15px;
       padding: 15px;
       background: #f1f5f9;
       border-radius: 8px;
@@ -256,6 +258,7 @@ html,body{
       justify-content:center;
       align-items:center;
       margin-bottom:30px;
+      background: transparent;
       
     }
     .schedule-form button{
@@ -267,6 +270,9 @@ html,body{
     .submit-button-div button{
       background-color: #2051a1;
     }
+    .label-create-schedule{
+      background: transparent;
+    }
 
     
     .schedule-form input {
@@ -274,6 +280,7 @@ html,body{
       width: 100%;
       margin-bottom: 20px;
       padding: 8px;
+      background: transparent;
     }
  
     
@@ -576,4 +583,29 @@ html,body{
 #join{
   background-color: #218838;
   color:white;
+}
+
+#profile-icon{
+  width:70px;
+  height:70px;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+object-fit: cover;
+  background: transparent;
+}
+
+.image{
+  padding-left: 10px;;
+  display: flex;
+  justify-content: flex-start;
+  background: transparent;
+  align-items: center;
+  margin-top: auto;
+
+}
+
+#profile-username{
+  background: transparent;
+  margin-left:20px;
 }

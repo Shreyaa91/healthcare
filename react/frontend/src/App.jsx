@@ -12,7 +12,8 @@ import ResetPassword from "./pages/resetpassword";
 import CartPage from "./pages/cart";
 import { CartProvider } from './pages/cartcontext.jsx';
 import MedicineOrderingScreen from "./pages/medicineordering.jsx";
-import Payment from "./pages/payment.jsx";
+import PaymentPage from "./pages/payment.jsx";
+import ProfilePage from "./pages/profile.jsx";
 
 
 function App() {
@@ -57,13 +58,14 @@ function App() {
         <Route path="/dashboard" element={<Dashboard/>}/>
         <Route path="/appointment" element={<AppointmentPage user={user}/>}/>
         <Route path="/bookappointment" element={<BookAppointment user={user} />} />
-        <Route path="/medicalrecords" element={<MedicalRecords userId={user?.id}/>}/>
+        <Route path="/medicalrecords" element={<MedicalRecords userId={user?.id} user={user}/>}/>
         <Route path="/forgot_password" element={<ForgotPassword/>} />
         <Route path="/resetpassword" element={<ResetPassword/>} />
         <Route path="/cart" element={<CartPage/>} />  
-        <Route path="/payment" element={<Payment/>} />
+        <Route path="/payment" element={<PaymentPage user={user}/>} />
         <Route path="/cartcontext" element={<ResetPassword/>} />  
          <Route path="/medicineordering" element={<MedicineOrderingScreen/>} />
+         <Route path="/profile" element={<ProfilePage user={user}/>} />
       </Routes>
     </Router>
     </CartProvider>

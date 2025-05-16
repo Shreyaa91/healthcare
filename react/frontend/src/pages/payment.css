@@ -1,4 +1,4 @@
-/* Full-page layout */
+/* 
 body, html {
     height: 100%;
     margin: 0;
@@ -18,7 +18,7 @@ body, html {
     width:1530px;
   }
   
-  /* Form container */
+  
   .payment-wrapper {
     width: 100%;
     max-width: 480px;
@@ -30,7 +30,7 @@ body, html {
     text-align: left;
   }
   
-  /* Form elements */
+
   .payment-form {
     display: flex;
     flex-direction: column;
@@ -51,7 +51,7 @@ body, html {
     color: #333;
   }
   
-  /* Button */
+
   .pay-btn {
     background-color: #007bff;
     color: white;
@@ -69,4 +69,147 @@ body, html {
 
   #methods{
     color:black;
-  }
+  } */
+body, html {
+  margin-top: 10px;;
+  padding: 0;
+  height: 100%;
+  
+  overflow-x: hidden; /* optional: prevents horizontal scroll */
+}
+
+* {
+  box-sizing: border-box;
+}
+
+  .checkout-page {
+  display: flex;
+  justify-content: space-between;
+  padding: 30px;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f6f6f6;
+  width:1550px;
+  margin-left: 12px;
+  
+}
+
+.summary-row-savings{
+  background:transparent;
+}
+.left-section {
+  width: 55%;
+  background-color: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.right-section {
+  width: 40%;
+  padding: 25px;
+}
+
+.add-address-btn {
+  margin-top: 15px;
+  padding: 12px 20px;
+  background-color: #1ab6b6;
+  color: white;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.address-form input,
+.address-form textarea {
+  width: 700px;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.save-btn {
+  margin-top: 10px;
+  background-color: #44a947;
+  color: white;
+  padding: 12px;
+  width: 720px;
+  border: none;
+  font-size: 15px;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.alert-box {
+  background-color: #2b2b71;
+  color: #fff;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+#alert{
+  color:rgb(228, 224, 224);
+  background: transparent;
+}
+.alert-box strong {
+  color: #ffd700;
+  display: block;
+  background: transparent;
+  margin-bottom: 6px;
+}
+
+.payment-summary {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.payment-summary h4 {
+  font-size: 16px;
+  margin-bottom: 16px;
+  color: #666;
+  text-transform: uppercase;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 15px;
+}
+
+.total-payable {
+  margin-top: 10px;;
+  margin-bottom: 10px;;
+  font-weight: bold;
+  color: #009688;
+}
+
+.savings {
+  background: #e6f4ea;
+  color: #2e7d32;
+  font-weight: bold;
+  padding: 6px;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.pay-btn {
+  margin-top: 40px;
+  
+  color: white;
+  padding: 12px 20px;
+  font-size: 15px;
+  border: none;
+  border-radius: 6px;
+  width: 100%;
+  cursor: pointer;
+}
+
+.pay-btn:hover {
+  background-color: #2b2b71;
+}
