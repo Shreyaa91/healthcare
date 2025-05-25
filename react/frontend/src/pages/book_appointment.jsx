@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./book_appointment.css"
 import profilelogo from "./image.png";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+
 const BookAppointment = ({user}) => {
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
@@ -16,7 +18,7 @@ const BookAppointment = ({user}) => {
   // Fetch all doctors
   const fetchDoctors = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/doctors", {
+      const response = await axios.get(`${API_BASE_URL}/doctors`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -44,7 +46,7 @@ const BookAppointment = ({user}) => {
       
       const token = localStorage.getItem("token"); // Retrieve token from local storage
       console.log(token)
-      const response = await fetch(`http://localhost:8000/doctor/${doctorId}/schedule`, {
+      const response = await fetch(`${API_BASE_URL}/doctor/${doctorId}/schedule`, {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${token}`,  // Send token for authentication
@@ -72,7 +74,7 @@ const BookAppointment = ({user}) => {
   const bookAppointment = async (slot) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:8000/book_appointment", {
+      const response = await fetch(`${API_BASE_URL}/book_appointment`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

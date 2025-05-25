@@ -3,6 +3,7 @@ import axios from "axios";
 import './medicalrecords.css'
 import { useNavigate } from "react-router-dom";
 import profilelogo from "./image.png";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const MedicalRecords = ({ userId,user}) => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -21,7 +22,7 @@ const MedicalRecords = ({ userId,user}) => {
         return;
       }
 
-      const response = await axios.get("http://localhost:8000/records/", {
+      const response = await axios.get(`${API_BASE_URL}/records/`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -63,7 +64,7 @@ const MedicalRecords = ({ userId,user}) => {
 
     try {
       console.log("MEDICAL RECORDS:",userId);
-      await axios.post(`http://localhost:8000/upload_record/${userId}`, formData, {
+      await axios.post(`${API_BASE_URL}/upload_record/${userId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,

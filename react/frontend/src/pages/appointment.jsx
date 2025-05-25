@@ -5,7 +5,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 import profilelogo from "./image.png";
-
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const AppointmentPage = ({ user }) => {
   const token=localStorage.getItem("token");
@@ -41,7 +41,7 @@ const AppointmentPage = ({ user }) => {
       const token = localStorage.getItem("token");
       console.log("Sending token:",token);
       console.log(user.id);
-      const response = await fetch(`http://localhost:8000/patient/${user.id}/appointments`, {
+      const response = await fetch(`${API_BASE_URL}/patient/${user.id}/appointments`, {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -89,7 +89,7 @@ const AppointmentPage = ({ user }) => {
   const fetchAvailableSlots = async (doctorId) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:8000/doctor/${doctorId}/schedule`, {
+      const response = await fetch(`${API_BASE_URL}/doctor/${doctorId}/schedule`, {
         method: "GET",
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
       });
@@ -103,7 +103,7 @@ const AppointmentPage = ({ user }) => {
   };
   const fetchDoctors = async () => {
     try {
-      const response = await fetch("http://localhost:8000/doctors");
+      const response = await fetch(`${API_BASE_URL}/doctors`);
       if (!response.ok) throw new Error("Failed to fetch doctors");
       const data = await response.json();
       setDoctors(data);
@@ -125,7 +125,7 @@ const AppointmentPage = ({ user }) => {
       
       const token = localStorage.getItem("token"); // Retrieve token from local storage
       console.log(token)
-      const response = await fetch(`http://localhost:8000/doctor/${doctorId}/schedule`, {
+      const response = await fetch(`${API_BASE_URL}/doctor/${doctorId}/schedule`, {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${token}`,  // Send token for authentication
@@ -154,7 +154,7 @@ const AppointmentPage = ({ user }) => {
 const fetchPatientDetails = async (slotId,doctorId) => {
   try {
     const token = localStorage.getItem("token");
-    const response = await fetch(`http://localhost:8000/${doctorId}/slot/${slotId}/patient`, {
+    const response = await fetch(`${API_BASE_URL}/${doctorId}/slot/${slotId}/patient`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -176,7 +176,7 @@ const fetchPatientDetails = async (slotId,doctorId) => {
 
 const createSchedule = async (scheduleInput) => {
   try {
-    const response = await fetch(`http://localhost:8000/doctor/${user.id}/schedule`, {
+    const response = await fetch(`${API_BASE_URL}/doctor/${user.id}/schedule`, {
       method: "POST",
       headers: { "Authorization": `Bearer ${localStorage.getItem("token")}`, "Content-Type": "application/json" },
       body: JSON.stringify([scheduleInput]),
@@ -194,7 +194,7 @@ const createSchedule = async (scheduleInput) => {
   const bookAppointment = async (slot) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:8000/book_appointment", {
+      const response = await fetch(`${API_BASE_URL}/book_appointment`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -234,7 +234,7 @@ const rescheduleAppointment = async (appointmentId, newScheduleId) => {
   try {
     const token = localStorage.getItem("token");
     console.log(appointmentId,'  ',newScheduleId);
-        const url = `http://localhost:8000/appointments/reschedule/${appointmentId}`;
+        const url = `${API_BASE_URL}/appointments/reschedule/${appointmentId}`;
     console.log("Request URL:", url);
     console.log("New Schedule ID:", newScheduleId);
     
@@ -278,7 +278,7 @@ const cancelAppointment = async (appointment) => {
   }
 
   try {
-    const response = await fetch(`http://localhost:8000/appointments/cancel/${appointment.id}`, {
+    const response = await fetch(`${API_BASE_URL}/appointments/cancel/${appointment.id}`, {
       method: "PUT",  
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -302,7 +302,7 @@ const cancelAppointment = async (appointment) => {
     console.log(slotId)
     try {
      
-      const response = await fetch(`http://localhost:8000/doctor/${user.id}/schedule/${slotId}`, {
+      const response = await fetch(`${API_BASE_URL}/doctor/${user.id}/schedule/${slotId}`, {
         method: "PUT",
         headers: {
           "Authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -322,31 +322,12 @@ const cancelAppointment = async (appointment) => {
     }
   };
 
-  // const deleteScheduleSlot = async (slotId) => {
-  //   try {
-  //     const token=localStorage.getItem("token");
-  //     console.log("Token:",token);
-  //     const response = await fetch(`http://localhost:8000/doctor/${user.id}/schedule/${slotId}`, {
-  //       method: "DELETE",
-  //       headers: {
-          
-  //         "Authorization": `Bearer ${token}`,
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
-  //     const data = await response.json();
-  //     alert(data.message);
-  //     fetchSchedule(user.id);
-  //   } catch (error) {
-  //     console.error("Error deleting slot:", error);
-  //   }
-  // };
 
   const deleteScheduleSlot = async (slotId) => {
     try {
       const token = localStorage.getItem("token");
       
-      const response = await fetch(`http://localhost:8000/doctor/${user.id}/schedule/${slotId}`, {
+      const response = await fetch(`${API_BASE_URL}/doctor/${user.id}/schedule/${slotId}`, {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${token}`,

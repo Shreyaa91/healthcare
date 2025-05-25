@@ -16,7 +16,7 @@ import PaymentPage from "./pages/payment.jsx";
 import ProfilePage from "./pages/profile.jsx";
 import FeedbackPage from "./pages/feedback.jsx";
 
-
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 function App() {
   const [user, setUser] = useState(null);
 
@@ -33,7 +33,7 @@ function App() {
   const fetchUserDetails = async (token, role) => {
     console.log(token)
     try {
-      const response = await fetch("http://localhost:8000/user/me", {
+      const response = await fetch(`${API_BASE_URL}/user/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './forgot_password.css'; // Link your CSS
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -14,7 +15,7 @@ const ForgotPassword = () => {
 
     try {
         const response = await axios.post(
-          'http://localhost:8000/password-reset-mail',
+          `${API_BASE_URL}/password-reset-mail`,
           { email:email }, // Ensure this is in the correct format
           { headers: { 'Content-Type': 'application/json' } }
         );

@@ -8,6 +8,7 @@ import { PiFolderSimpleMinusBold } from 'react-icons/pi';
 import { useCart } from '../pages/cartcontext';
 import { FiUpload } from 'react-icons/fi';
 import logo from './logo.jpg';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 
 

@@ -3,6 +3,8 @@ import { Link,useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./login1.css"; 
 import logo from './logo.jpg';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -12,29 +14,6 @@ const Login = () => {
   const handleChange = (e) => {
     setRole(e.target.value); // Update role based on selection
   };
-//   const handleLogin = async () => {
-//     try {
-//       const response = await axios.post("http://localhost:8000/login", {
-//         username: username, // FastAPI expects 'username'
-//         password,
-//       });
-
-//       // Save JWT token in localStorage
-//       localStorage.setItem("token", response.data.access_token);
-//       alert("Login successful!");
-
-//       // Check if the token is set before navigating
-//       if (response.data.access_token) {
-//         console.log("Navigating to consultation...");
-//         navigate("/consultation");  // Redirect user
-//     } else {
-//         console.log("No token received, not navigating.");
-//     }
-// } catch (err) {
-//     setError("Invalid email or password");
-//     console.error("Login error:", err);
-// }
-// };
 
 
 const handleLogin = async () => {
@@ -43,7 +22,7 @@ const handleLogin = async () => {
       formData.append("username", username);
       formData.append("password", password);
 
-      const response = await axios.post("http://localhost:8000/login", formData, {
+      const response = await axios.post(`${API_BASE_URL}/login`, formData, {
           headers: {
               "Content-Type": "application/x-www-form-urlencoded",
           },
@@ -53,7 +32,7 @@ const handleLogin = async () => {
       localStorage.setItem("user_role", response.data.role);
 
       // Fetch user details after login
-    const userResponse = await axios.get("http://localhost:8000/user/me", {
+    const userResponse = await axios.get(`${API_BASE_URL}/user/me`, {
       headers: { Authorization: `Bearer ${response.data.access_token}` },
     });
 

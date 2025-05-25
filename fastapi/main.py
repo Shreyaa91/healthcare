@@ -35,7 +35,9 @@ from zoneinfo import ZoneInfo  # For timezone support
 load_dotenv()
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-print(SUPABASE_KEY)
+EMAIL_USER = os.getenv("EMAIL_USER")
+EMAIL_PASS = os.getenv("EMAIL_PASS")
+
 # Initialize Supabase client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
@@ -44,9 +46,6 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 #AGORA
 AGORA_APP_ID = os.getenv("AGORA_APP_ID")
 AGORA_APP_CERTIFICATE = os.getenv("AGORA_APP_CERTIFICATE")
-
-print("AGORA_APP_ID:", AGORA_APP_ID)
-print("AGORA_APP_CERTIFICATE:", AGORA_APP_CERTIFICATE)
 
 # JWT Constants
 SECRET_KEY = "QWERTY!@#$"
@@ -236,6 +235,7 @@ class EmailRequest(BaseModel):
 class ResetPasswordRequest(BaseModel):
     email: str
     password: str
+    
 @app.post("/password-reset-mail")
 def generate_mail_fp(request: EmailRequest):
     email = request.email
@@ -256,11 +256,11 @@ Your App Team
         print(f"Connecting to SMTP server...")
         server = smtplib.SMTP('smtp.gmail.com', port=587)
         server.starttls()
-        server.login('mytestemailll.123@gmail.com', 'zczp pvve xcyw mpif')  
+        server.login(EMAIL_USER, EMAIL_PASS)  
         print(f"Sending email to {email}...")
         msg = EmailMessage()
         msg['Subject'] = "Password Reset Link"
-        msg['From'] = 'mytestemailll.123@gmail.com'
+        msg['From'] = EMAIL_USER
         msg['To'] = email
         msg.set_content(body)
         server.send_message(msg)
@@ -961,11 +961,11 @@ def send_email(to_email, subject, body):
         print(f"Connecting to SMTP server...")
         server = smtplib.SMTP('smtp.gmail.com', port=587)
         server.starttls()
-        server.login('mytestemailll.123@gmail.com', 'zczp pvve xcyw mpif')  # Use app password if 2FA is enabled
+        server.login(EMAIL_USER, EMAIL_PASS) 
         print(f"Sending email to {to_email}...")
         msg = EmailMessage()
         msg['Subject'] = subject
-        msg['From'] = 'mytestemailll.123@gmail.com'
+        msg['From'] = EMAIL_USER
         msg['To'] = to_email
         msg.set_content(body)
         server.send_message(msg)

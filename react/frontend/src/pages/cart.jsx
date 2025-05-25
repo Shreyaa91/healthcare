@@ -9,6 +9,7 @@ import { useCart } from './cartcontext';
 import { FiUpload } from 'react-icons/fi';
 import { FaTrash } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 
 

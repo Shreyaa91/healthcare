@@ -91,6 +91,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./Payment.css";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const PaymentPage = ({user}) => {
   const [showAddressForm, setShowAddressForm] = useState(false);

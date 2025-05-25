@@ -4,6 +4,7 @@ import AgoraRTC from "agora-rtc-sdk-ng";
 import "./consultation.css";
 import {io} from 'socket.io-client';
 import { FiMic, FiMicOff, FiVideo, FiVideoOff, FiMonitor, FiStopCircle, FiPhoneOff, FiCircle } from "react-icons/fi";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 
 const Consultation = ({user}) => {
@@ -59,7 +60,7 @@ const [patientId, setPatientId] = useState(null);
     console.log("ENVIRONMENT IMPORTS",import.meta.env);
 
    useEffect(() => {
-  socket.current = io("http://localhost:8000", {
+  socket.current = io(`${API_BASE_URL}`, {
     transports: ["websocket", "polling"],
   });
 
@@ -152,11 +153,11 @@ const handleCallEnd = async () => {
         await leaveChannel();
         
         console.log("Attempting to post to consultation/complete endpoint with fetch");
-        console.log("Full request URL:", "http://localhost:8000/consultation/complete");
+        console.log("Full request URL:", `${API_BASE_URL}/consultation/complete`);
   
         
         // Make the actual API call
-        const response = await fetch("http://localhost:8000/consultation/complete", {
+        const response = await fetch(`${API_BASE_URL}/consultation/complete`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -239,7 +240,7 @@ const sendMessage = () => {
     useEffect(() => {
         const fetchAppointmentDetails = async () => {
           try {
-            const response = await fetch(`http://localhost:8000/appointments/${channel_name}`);
+            const response = await fetch(`${API_BASE_URL}/appointments/${channel_name}`);
             if (!response.ok) {
               throw new Error('Failed to fetch appointment data');
             }
@@ -424,54 +425,7 @@ const sendMessage = () => {
     
   
    
-    // const joinChannel = useCallback(async () => {
-    //     if (!appointment || !appointment.id) {
-    //       console.error("❌ Appointment not loaded");
-    //       return;
-    //     }
-    //     console.log(appointment)
-    
-    //     try {
-    //       console.log("🔄 Requesting camera access...");
-    //       await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    
-    //       const tokenResponse = await fetch(
-    //         `http://localhost:8000/consultation/token?appointment_id=${appointment.id}&uid=0`
-    //       );
-    //       const tokenData = await tokenResponse.json();
-    
-    //       if (!tokenResponse.ok) {
-    //         console.error("❌ Failed to get token:", tokenData.detail);
-    //         return;
-    //       }
-    //       console.log("Token data:",tokenData);
-    //       const { token, channel_name, uid } = tokenData;
-    //       console.log("Token:",token);
-    //       console.log("ChannelName:",channel_name);
-    //       console.log("UID:",uid);
-    //       console.log("App ID:",APP_ID);
-    //       console.log("🔄 Joining Agora channel...");
-         
-    //       await client.current.join(APP_ID, channel_name, token, uid); 
-    //       console.log("🎥 Creating camera tracks...");
-    //       localTracks.current.videoTrack = await AgoraRTC.createCameraVideoTrack();
-    //       localTracks.current.audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-    
-    //       if (localVideoRef.current) {
-    //         localTracks.current.videoTrack.play(localVideoRef.current);
-    //       }
-    
-    //       console.log("📡 Publishing...");
-    //       await client.current.publish([
-    //         localTracks.current.videoTrack,
-    //         localTracks.current.audioTrack,
-    //       ]);
-    
-    //       setJoined(true);
-    //     } catch (error) {
-    //       console.error("❌ Error in joinChannel:", error);
-    //     }
-    // }, [appointment]);
+
     
     const joinChannel = useCallback(async () => {
         if (!appointment || !appointment.id) {
@@ -483,7 +437,7 @@ const sendMessage = () => {
         try {
           // Get token first
           const tokenResponse = await fetch(
-            `http://localhost:8000/consultation/token?appointment_id=${appointment.id}&uid=0`
+            `${API_BASE_URL}/consultation/token?appointment_id=${appointment.id}&uid=0`
           );
           const tokenData = await tokenResponse.json();
               
@@ -561,29 +515,6 @@ const sendMessage = () => {
     
         return () => clearInterval(interval); // Cleanup on unmount
     }, []);
-    
-    // const leaveChannel = useCallback(async () => {
-    //     try {
-    //         if (localTracks.current.videoTrack) {
-    //             localTracks.current.videoTrack.stop();
-    //             localTracks.current.videoTrack.close();
-    //         }
-    //         if (localTracks.current.audioTrack) {
-    //             localTracks.current.audioTrack.stop();
-    //             localTracks.current.audioTrack.close();
-    //         }
-    
-    //         await client.current.leave();
-    //         setJoined(false);
-    //         setDoctorJoined(false);
-    
-    //         if (channel.current) await channel.current.leave();
-    //         if (rtmClient.current) await rtmClient.current.logout();
-    
-    //     } catch (error) {
-    //         console.error("Error leaving the channel:", error);
-    //     }
-    // }, []);
     
 
     const leaveChannel = useCallback(async () => {

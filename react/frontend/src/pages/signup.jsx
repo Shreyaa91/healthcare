@@ -9,13 +9,13 @@ const Signup = ({ setPage }) => {
     name: "",
     email: "",
     age: "",
-    phone:"",
+    phone: "",
     gender: "male",
     username: "",
     password: "",
-    role:"patient",
-    speciality:"",
-    experience:""
+    role: "patient",
+    specialty: "", // Fixed field name
+    experience: ""
   });
   const [error, setError] = useState("");
 
@@ -23,28 +23,58 @@ const Signup = ({ setPage }) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value, // Updates input values properly
+      [name]: value,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Clear previous errors
-  
+    setError("");
+
     try {
-      const response = await api.post("/signup", formData);
-      alert(response.data.message); // Show the success message
+      console.log("Form Data Submitted:", formData);
+      
+      // Prepare data for submission
+      const submitData = {
+        ...formData,
+        age: formData.age ? parseInt(formData.age) : null,
+        experience: formData.experience ? parseInt(formData.experience) : null,
+      };
+
+      const response = await api.post("/signup", submitData);
+      alert(response.data.message);
       navigate("/");
     } catch (err) {
-      console.error("Signup Error:", err.response ? err.response.data : err.message);
-    
-      // Display the actual backend error message if available
-      const errorMsg = err?.response?.data?.detail || "Signup failed. Try again.";
+      console.error("Signup Error:", err);
+      
+      // Proper error handling to avoid rendering objects
+      let errorMsg = "Signup failed. Try again.";
+      
+      if (err?.response?.data) {
+        const errorData = err.response.data;
+        
+        // Handle FastAPI validation errors
+        if (errorData.detail) {
+          if (Array.isArray(errorData.detail)) {
+            // Handle validation error array
+            errorMsg = errorData.detail.map(error => 
+              `${error.loc ? error.loc.join('.') : 'Field'}: ${error.msg}`
+            ).join(', ');
+          } else if (typeof errorData.detail === 'string') {
+            // Handle simple error message
+            errorMsg = errorData.detail;
+          } else {
+            // Handle object error
+            errorMsg = JSON.stringify(errorData.detail);
+          }
+        }
+      } else if (err?.message) {
+        errorMsg = err.message;
+      }
+      
       setError(errorMsg);
     }
-    
   };
-  
 
   return (
     <div className="container">

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./feedback.css";
 import axios from "axios";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const FeedbackPage = () => {
   const [rating, setRating] = useState(0);
@@ -11,7 +12,7 @@ const FeedbackPage = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:8000/feedback-post", 
+      const response = await axios.post(`${API_BASE_URL}/feedback-post`, 
        {stars:rating,
         feedback:comment,},
         { headers: { "Content-Type": "application/json" }

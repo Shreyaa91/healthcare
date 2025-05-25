@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import './profile.css'
 import profilelogo from "./image.png";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const ProfilePage = ({user}) => {
   const [profile, setProfile] = useState(null);
@@ -17,7 +18,7 @@ const ProfilePage = ({user}) => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/profile", {
+        const res = await axios.get(`${API_BASE_URL}/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setProfile(res.data);
@@ -33,31 +34,6 @@ const ProfilePage = ({user}) => {
     fetchProfile();
   }, [navigate, token]);
 
-  // const handleUpdate = async () => {
-  //     let payload = {
-  //   email: formData.email,
-  //   phone: formData.phone,
-  //   age: formData.age ? parseInt(formData.age) : undefined,
-  //   gender: formData.gender,
-  //   specialty: formData.specialty || undefined,
-  //   experience: formData.experience ? parseInt(formData.experience) : undefined,
-  //   about: formData.bio || undefined,  // ✅ rename to match FastAPI field
-  // };
-  //   payload = Object.fromEntries(
-  //   Object.entries(payload).filter(([_, v]) => v !== undefined)
-  // );
-
-  // console.log("Cleaned payload:", payload);
-  //   try {
-  //     const res = await axios.put("http://localhost:8000/profile", payload, {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     });
-  //     setProfile(res.data);
-  //     setEditMode(false);
-  //   } catch (err) {
-  //     console.error("Failed to update profile", err);
-  //   }
-  // };
 
 
   const handleUpdate = async () => {
@@ -81,7 +57,7 @@ const ProfilePage = ({user}) => {
   
   try {
     // Use the cleaned payload here instead of formData
-    const res = await axios.put("http://localhost:8000/profile", payload, {
+    const res = await axios.put(`${API_BASE_URL}/profile`, payload, {
       headers: { Authorization: `Bearer ${token}` },
     });
     

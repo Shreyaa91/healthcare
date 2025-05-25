@@ -13,7 +13,7 @@ function ResetPassword() {
   const handleReset = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put('http://localhost:8000/reset-password', {
+      const response = await axios.put(`${API_BASE_URL}/reset-password`, {
         email:email,
         password: newPassword,
       });
