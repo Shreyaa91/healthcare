@@ -7,7 +7,6 @@ PyJWT
 python-socketio
 psycopg2
 email-validator
-smtplib  # Comes built-in, so not needed — see note below
 agora-token-builder
 APScheduler
 python-multipart
