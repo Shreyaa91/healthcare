@@ -84,7 +84,7 @@ app.add_middleware(
 )
 
 # Initialize Socket.IO server
-sio = socketio.AsyncServer(cors_allowed_origins=["http://localhost:5173"], async_mode="asgi")
+sio = socketio.AsyncServer(cors_allowed_origins=["https://healthcare-o0rt.onrender.com"], async_mode="asgi")
 sio_app = socketio.ASGIApp(sio)
 
 # Mount Socket.IO server at /socket.io endpoint
@@ -240,7 +240,7 @@ class ResetPasswordRequest(BaseModel):
 def generate_mail_fp(request: EmailRequest):
     email = request.email
     try:
-        reset_link=f"http://localhost:5173/resetpassword?email={email}"
+        reset_link=f"https://healthcare-o0rt.onrender.com/resetpassword?email={email}"
         body = f"""\
 Hi,
 
@@ -915,7 +915,7 @@ def generate_mail(appointment_id: int):
         - Consultation Channel: {channel_name}
 
         Please click the link below to join the consultation at the scheduled time:
-        Join Consultation: http://localhost:5173/consultation/{channel_name}
+        Join Consultation: https://healthcare-o0rt.onrender.com/consultation/{channel_name}
 
         Thank you,
         Healthcare Platform Team
@@ -936,7 +936,7 @@ def generate_mail(appointment_id: int):
         - Consultation Channel: {channel_name}
 
         Please click the link below to join the consultation at the scheduled time:
-        Join Consultation: http://localhost:5173/consultation/{channel_name}
+        Join Consultation: https://healthcare-o0rt.onrender.com/consultation/{channel_name}
 
         Thank you,
         Healthcare Platform Team
