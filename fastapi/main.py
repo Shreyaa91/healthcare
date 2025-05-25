@@ -298,9 +298,9 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username = payload.get("sub")
         role = payload.get("role")
-        print('-----------------------------------------')
-        print(role)
-        print('-----------------------------------------')
+        # print('-----------------------------------------')
+        # print(role)
+        # print('-----------------------------------------')
         user_data=None
         if(role=='specialist'):
         # Query the database for the user's ID (doctor's ID if the role is 'specialist')
@@ -496,7 +496,7 @@ def book_appointment(appointment_data: dict, user=Depends(get_current_user)):
             raise HTTPException(status_code=400, detail="Slot is no longer available.")
         schedule_entry = response.data[0]
         # Debugging: Check the slot data
-        print("Available Slot Data:", available_slot)
+        # print("Available Slot Data:", available_slot)
 
         # Insert into appointments table
         new_appointment = {
@@ -509,7 +509,7 @@ def book_appointment(appointment_data: dict, user=Depends(get_current_user)):
         }
 
         # Debugging: Check appointment data before insertion
-        print("New Appointment Data:", new_appointment)
+        # print("New Appointment Data:", new_appointment)
 
         # Insert appointment
         insert_response = supabase.table("appointments").insert(new_appointment).execute()
@@ -544,8 +544,8 @@ def book_appointment(appointment_data: dict, user=Depends(get_current_user)):
 
 @app.get("/patient/{patient_id}/appointments")
 async def get_patient_appointments(patient_id: str, user=Depends(get_current_user)):
-    print("user ID:", user["id"])
-    print("patient_id", patient_id)
+    # print("user ID:", user["id"])
+    # print("patient_id", patient_id)
 
     if user["id"] != patient_id:
         raise HTTPException(status_code=403, detail="Not authorized")
@@ -638,8 +638,8 @@ def get_patient_details_from_slot(slot_id: str, doctor_id:str,user=Depends(get_c
     if user["role"] != "specialist" and user["id"]!=doctor_id:
         raise HTTPException(status_code=403, detail="Access denied")
 
-    print("SLOT IDDDD:",slot_id)
-    print("DOCTOR IDD",doctor_id)
+    # print("SLOT IDDDD:",slot_id)
+    # print("DOCTOR IDD",doctor_id)
     # Get the appointment for this slot
     appointment = supabase.table("appointments").select("patient_id").eq("schedule_id", slot_id).execute()
     if not appointment.data:
@@ -783,13 +783,13 @@ async def upload_medical_record(
 @app.get("/records/")
 def get_medical_records(user=Depends(get_current_user)):
     user_id = user["id"]
-    print(user["id"])
+    # print(user["id"])
     result = supabase.table("medical_certificates").select("*").eq("user_id", user_id).order("uploaded_at", desc=True).execute()
     data = result.data
 
     for record in data:
         signed_url = supabase.storage.from_("medical-records").create_signed_url(record["file_path"], 3600)
-        print(signed_url)
+        # print(signed_url)
         record["url"] = signed_url.get("signedURL", "")
 
     return {"records": data}
@@ -803,7 +803,7 @@ def get_medical_records(id:str):
 
     for record in data:
         signed_url = supabase.storage.from_("medical-records").create_signed_url(record["file_path"], 3600)
-        print(signed_url)
+        # print(signed_url)
         record["url"] = signed_url.get("signedURL", "")
 
     return {"records": data}
@@ -988,17 +988,17 @@ class ConsultationPayload(BaseModel):
 
 @app.post("/consultation/complete")
 def complete_consultation(payload: ConsultationPayload, user=Depends(get_current_user)):
-    print("User ID:", user["id"])
-    print("Payload Doctor ID:", payload.doctor_id)
-    print("Payload Patient ID:", payload.patient_id)
+    # print("User ID:", user["id"])
+    # print("Payload Doctor ID:", payload.doctor_id)
+    # print("Payload Patient ID:", payload.patient_id)
 
     # Fixed authentication logic - user must be either the doctor or the patient
     if user["id"] != payload.patient_id and user["id"] != payload.doctor_id:
         raise HTTPException(status_code=403, detail="Not authenticated")
     
-    print('---------------')
-    print("PAYLOAD>APPOINTMENT_ID", payload.appointment_id)
-    print('---------------')
+    # print('---------------')
+    # print("PAYLOAD>APPOINTMENT_ID", payload.appointment_id)
+    # print('---------------')
     
     # Insert into consultation table
     try:
@@ -1046,7 +1046,7 @@ def get_appointment(appointment_id: str):
     )
 
     data = response.data
-    print("DATA IN CONSULTATION:",data)
+    # print("DATA IN CONSULTATION:",data)
     if not data:
         raise HTTPException(status_code=404, detail="Appointment not found")
 
@@ -1116,7 +1116,7 @@ def get_user_profile(user=Depends(get_current_user)):
 
     # Extract the data directly from the response (no need for .data)
     data = response.data
-    print("DATA: ",data)
+    # print("DATA: ",data)
     # Manually serialize the data to a format that FastAPI can encode
     profile = {
         "id": data["id"],
