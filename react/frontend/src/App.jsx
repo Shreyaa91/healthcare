@@ -14,6 +14,7 @@ import { CartProvider } from './pages/cartcontext.jsx';
 import MedicineOrderingScreen from "./pages/medicineordering.jsx";
 import PaymentPage from "./pages/payment.jsx";
 import ProfilePage from "./pages/profile.jsx";
+import FeedbackPage from "./pages/feedback.jsx";
 
 
 function App() {
@@ -66,6 +67,7 @@ function App() {
         <Route path="/cartcontext" element={<ResetPassword/>} />  
          <Route path="/medicineordering" element={<MedicineOrderingScreen/>} />
          <Route path="/profile" element={<ProfilePage user={user}/>} />
+         <Route path="/feedback" element={<FeedbackPage/>} />
       </Routes>
     </Router>
     </CartProvider>

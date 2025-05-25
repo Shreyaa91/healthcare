@@ -15,7 +15,7 @@ from datetime import datetime, timedelta,date
 from fastapi import FastAPI, HTTPException, Depends,Request,Header,UploadFile,File,Form,Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from pydantic import BaseModel
+from pydantic import BaseModel,Field
 from supabase import create_client, Client
 from dotenv import load_dotenv
 from pathlib import Path
@@ -201,18 +201,20 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     password = form_data.password
 
     # Check if user exists in `patients` or `specialists`
-    patient_response = supabase.table("patients").select("*").eq("username", username).execute()
-    specialist_response = supabase.table("doctors").select("*").eq("username", username).execute()
-
     user = None
     role = None
-
+    patient_response = supabase.table("patients").select("*").eq("username", username).execute()
     if patient_response.data:
         user = patient_response.data[0]
         role = "patient"
-    elif specialist_response.data:
+    specialist_response = supabase.table("doctors").select("*").eq("username", username).execute()
+
+    if specialist_response.data:
         user = specialist_response.data[0]
         role = "specialist"
+
+    
+   
 
     if not user:
         raise HTTPException(status_code=401, detail="Invalid User ID")
@@ -289,20 +291,7 @@ def reset_password(request:ResetPasswordRequest):
     raise HTTPException(status_code=404, detail="Email not found in records")
     
 
-#USER AUTHENTICATION
-# @app.get("/user/me")
-# async def get_current_user(token: str = Depends(oauth2_scheme)):
-#     try:
-#         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-#         username = payload.get("sub")
-#         role = payload.get("role")
 
-#         return {"username": username, "role": role}
-#     except jwt.ExpiredSignatureError:
-#         raise HTTPException(status_code=401, detail="Token expired")
-#     except jwt.InvalidTokenError:
-#         raise HTTPException(status_code=401, detail="Invalid token")
-    
 @app.get("/user/me")
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
@@ -352,23 +341,6 @@ class AppointmentBooking(BaseModel):
     
 # Doctor gets his/her schedule
 
-
-# @app.get("/doctor/{doctor_id}/schedule")
-# def get_doctor_schedule(doctor_id: str, user=Depends(get_current_user)):
-#     if user["role"] == "specialist" and user["id"] != doctor_id:
-#         raise HTTPException(status_code=403, detail="Access denied to this schedule")
-
-#     today = date.today().isoformat()  # Format: 'YYYY-MM-DD'
-
-#     response = (
-#         supabase.table("doctor_availability")
-#         .select("*")
-#         .eq("doctor_id", doctor_id)
-#         .gte("available_date", today)  # Only fetch today and future
-#         .execute()
-#     )
-
-#     return response.data
 
 @app.get("/doctor/{doctor_id}/schedule")
 def get_doctor_schedule(doctor_id: str, user=Depends(get_current_user)):
@@ -823,6 +795,21 @@ def get_medical_records(user=Depends(get_current_user)):
     return {"records": data}
 
 
+@app.get("/records/{id}")
+def get_medical_records(id:str):
+    user_id = id
+    result = supabase.table("medical_certificates").select("*").eq("user_id", user_id).order("uploaded_at", desc=True).execute()
+    data = result.data
+
+    for record in data:
+        signed_url = supabase.storage.from_("medical-records").create_signed_url(record["file_path"], 3600)
+        print(signed_url)
+        record["url"] = signed_url.get("signedURL", "")
+
+    return {"records": data}
+
+
+
 
 def check_and_send_emails():
     print('-----------------------Running scheduler-------------------')
@@ -989,35 +976,6 @@ def send_email(to_email, subject, body):
         raise
 
     
-
-# @app.post("/consultation/complete")
-# def complete_consultation(data: dict, user=Depends(get_current_user)):
-#     appointment_id = data.get("appointment_id")
-#     patient_id = data.get("patient_id")
-#     doctor_id = data.get("doctor_id")
-#     duration = data.get("duration")
-#     summary = data.get("summary", "")
-
-#     # Insert into consultations table
-#     consultation_data = {
-#         "appointment_id": appointment_id,
-#         "patient_id": patient_id,
-#         "doctor_id": doctor_id,
-#         "duration": duration,
-#         "summary": summary,
-#         "created_at": datetime.utcnow().isoformat()
-#     }
-
-#     # Insert consultation record
-#     consultation_response = supabase.table("consultations").insert(consultation_data).execute()
-
-#     # Update appointment status to completed
-#     appointment_response = supabase.table("appointments").update({"status": "completed"}).eq("id", appointment_id).execute()
-
-#     if consultation_response.status_code == 200 and appointment_response.status_code == 200:
-#         return {"message": "Consultation saved and appointment marked completed"}
-#     else:
-#         raise HTTPException(status_code=500, detail="Error saving consultation or updating appointment")
 
 
 class ConsultationPayload(BaseModel):
@@ -1214,3 +1172,24 @@ def update_user_profile(
         return {"message": "Profile updated successfully", "data": response.data[0]}
     
     raise HTTPException(status_code=500, detail="Failed to update profile")
+
+
+class FeedbackRequest(BaseModel):
+    stars: int = Field(..., ge=1, le=5)
+    feedback: str
+    
+@app.post("/feedback-post")
+def submit_feedback(feedback: FeedbackRequest):
+    try:
+        response = supabase.table("feedback").insert({
+            "stars": feedback.stars,
+            "feedback": feedback.feedback,
+        }).execute()
+
+        if not response:
+            raise HTTPException(status_code=500, detail="Failed to submit feedback")
+
+        return {"message": "Feedback submitted successfully"}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

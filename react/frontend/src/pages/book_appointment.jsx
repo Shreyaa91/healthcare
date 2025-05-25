@@ -109,7 +109,7 @@ const BookAppointment = ({user}) => {
         <li onClick={()=>navigate('/medicalrecords')}>Medical Records</li>
         <li onClick={()=>navigate('/medicineordering')}>E-Pharmacy</li>
         <li onClick={()=>navigate('/payment')}>Billing</li>
-        <li onClick={() => navigate('/appointment')}>Feedback</li>
+        <li onClick={() => navigate('/feedback')}>Feedback</li>
         {/* <li onClick={()=>navigate('/appointment')}>Settings</li> */}
         </ul>
     <div className="image" onClick={()=>navigate('/profile')}>

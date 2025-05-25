@@ -384,7 +384,7 @@ return (
         <li onClick={()=>navigate('/medicineordering')}>E-Pharmacy</li>
         <li onClick={()=>navigate('/payment')}>Billing</li>
         {/* <li onClick={()=>navigate('/appointment')}>Settings</li> */}
-        <li onClick={() => navigate('/appointment')}>Feedback</li>
+        <li onClick={() => navigate('/feedback')}>Feedback</li>
       </ul>
          <div className="image" onClick={()=>navigate('/profile')}>
              <img id="profile-icon" src={profilelogo}></img>
@@ -519,7 +519,7 @@ return (
               const diffInMs = appointmentStart - now;
               return diffInMs <= 30 * 60 * 1000 && diffInMs > 0;
             };
-            // const handleJoinConsultation = (appointment) => {
+            // const handle Consultation = (appointment) => {
             //   // navigate(`/consultation?channel=${appointment.channel_name}`);
             //   navigate('/consultation')
             // };
@@ -543,11 +543,11 @@ return (
                         <div className="appointment-actions">
                           <button id="reschedule" onClick={() => handleRescheduleClick(appointment)}>Reschedule</button>
                           <button id="cancel" onClick={() => cancelAppointment(appointment)}>Cancel</button>
-                          {isWithin30Minutes(appointment.appointment_date, appointment.start_time) && (
+                          {/* {isWithin30Minutes(appointment.appointment_date, appointment.start_time) && (
                   <button id="join" onClick={() => handleJoinConsultation(appointment)}>
                     Join Consultation
                   </button>
-                )}
+                )} */}
                         </div>
                       </div>
                     ))

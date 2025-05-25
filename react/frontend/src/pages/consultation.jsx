@@ -47,6 +47,8 @@ const Consultation = ({user}) => {
     const [isRecording, setIsRecording] = useState(false);
     const [currentTime, setCurrentTime] = useState(new Date().toLocaleString());
     const socket = useRef(null);
+    const [medicalRecords, setMedicalRecords] = useState([]);
+const [patientId, setPatientId] = useState(null);
 
     const token = localStorage.getItem("token");
     // const tokenString = token ? JSON.parse(token) : null;
@@ -63,81 +65,57 @@ const Consultation = ({user}) => {
 
   socket.current.on("connect", () => {
     console.log("Connected to server");
+    socket.current.emit("join_room", channel_name);
   });
 
   socket.current.on("receive_message", (message) => {
     console.log("Received message:", message);
     setChatMessages((prevMessages) => [...prevMessages, message]);
   });
-
+    socket.current.on("receive_document", (file) => {
+    console.log("Received document:", file);
+    setUploadedFiles((prev) => [...prev, file]);
+  });
   return () => {
     if (socket.current) {
       socket.current.disconnect();
     }
   };
-}, []);
+}, [channel_name]);
+
+
+useEffect(() => {
+   console.log("USEEFFECT triggered with appointment.id:", appointment?.id, "and user.role:", user?.role);
+const fetchPatientAndRecords = async () => {
+  console.log("PATIENT ID:", appointment.patient_id);
+  try {
+    if (user.role === 'specialist' && appointment.id) {
+      const patientId = appointment.patient_id;
+      setPatientId(patientId);
+
+      const res2 = await axios.get(`/records/${appointment.patient_id}`);
+      console.log("Fetched medical records:", res2.data.records);  // <-- log API response
+
+      setMedicalRecords(res2.data.records);  // setting state
+    }
+  } catch (err) {
+    console.error("Error fetching patient or records", err);
+  }
+};
+
+    fetchPatientAndRecords();
+    
+}, [appointment?.id, user?.role]);
+
+useEffect(() => {
+  console.log("MEDICAL-RECORDS updated:", medicalRecords);
+}, [medicalRecords]);
+
 
     const handleVideoClick = (videoType) => {
         setFocusedVideo(videoType);
       };
-// const handleCallEnd = async () => {
-//     console.log("Ending call for appointment:", appointment);
-    
-//     if (!appointment || !appointment.id) {
-//         console.error("Cannot end call: Appointment data is missing");
-//         return;
-//     }
-    
-//     // Make sure token is available and properly formatted
-//     const authToken = localStorage.getItem('token') || sessionStorage.getItem('token');
-    
-//     if (!authToken) {
-//         console.error("Authentication token is missing");
-//         alert("You need to be logged in to end this call");
-//         return;
-//     }
-    
-//     const payload = {
-//         appointment_id: appointment.id,
-//         patient_id: appointment.patient_id,
-//         doctor_id: appointment.doctor_id,
-//         duration: Math.floor(seconds / 60),
-//         summary: "Consultation completed successfully",
-//     };
 
-//     console.log("Sending payload:", payload);
-    
-//     try {
-//         // Try using the fetch API instead of axios in case there's an issue with axios
-//         console.log("Attempting to post to consultation/complete endpoint with fetch");
-        
-//         const response = await fetch("http://localhost:8000/consultation/complete", {
-//             method: "POST",
-//             headers: {
-//                 "Content-Type": "application/json",
-//                 "Authorization": `Bearer ${authToken}`
-//             },
-//             body: JSON.stringify(payload)
-//         });
-        
-//         console.log("Response status:", response.status);
-        
-//         if (response.ok) {
-//             const data = await response.json();
-//             console.log("Consultation API response:", data);
-//             console.log("Consultation saved and appointment marked completed.");
-//             await leaveChannel();
-//             navigate("/appointments");
-//         } else {
-//             const errorText = await response.text();
-//             console.error("Server returned error:", response.status, errorText);
-//             alert(`Failed to complete consultation: ${response.status} ${errorText}`);
-//         }
-//     } catch (err) {
-//         console.error("Error during call end:", err);
-//         alert("Failed to complete the consultation. Network or server error.");
-//     }
-// };
       
 
 const handleCallEnd = async () => {
@@ -285,17 +263,35 @@ const sendMessage = () => {
         }
     };
 
-    const handleFileUpload = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const newFile = {
-                name: file.name,
-                url: URL.createObjectURL(file),
-            };
-            setUploadedFiles(prev => [...prev, newFile]);
-        }
-    };
+    // const handleFileUpload = (event) => {
+    //     const file = event.target.files[0];
+    //     if (file) {
+    //         const newFile = {
+    //             name: file.name,
+    //             url: URL.createObjectURL(file),
+    //         };
+    //         setUploadedFiles(prev => [...prev, newFile]);
+    //     }
+    // };
     
+    const handleFileUpload = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    const newFile = {
+      name: file.name,
+      url: URL.createObjectURL(file), // for now it's local
+    };
+
+    setUploadedFiles(prev => [...prev, newFile]);
+
+    // ⬅️ Send file info to the other side
+    socket.current.emit("send_document", {
+      name: newFile.name,
+      url: newFile.url,
+      channel_name,
+    });
+  }
+};
     const renderTabContent = () => {
         if (activeTab === 'chat') {
             return (
@@ -366,24 +362,65 @@ const sendMessage = () => {
                 </div>
                 </div>
             );
-        } else if (activeTab === 'docs') {
-            return (
-                <div className="docs-tab">
-                    <input
-                        type="file"
-                        onChange={handleFileUpload}
-                    />
-                    {uploadedFiles.map((file, index) => (
-                        <div key={index}>
-                            <p className="file-name"><strong>{file.name}</strong></p>
-                            <a href={file.url} target="_blank" rel="noopener noreferrer">View File</a>
-                        </div>
-                    ))}
-                </div>
-            );
-        }
+          }
+          else if (activeTab === 'docs') {
+  return (
+    <div className="docs-tab">
+      {/* Upload Section */}
+      <input type="file" onChange={handleFileUpload} />
+      
+      {/* Files uploaded in this session */}
+      {uploadedFiles.length > 0 && (
+        <div className="uploaded-section">
+          <h4>Your Uploaded Files</h4>
+          {uploadedFiles.map((file, index) => (
+            <div key={index}>
+              <p className="file-name"><strong>{file.name}</strong></p>
+              <a href={file.url} target="_blank" rel="noopener noreferrer">View File</a>
+            </div>
+          ))}
+        </div>
+      )}
+  
+      {/* Medical Records (visible to doctors only) */}
+      {user.role === 'specialist' && (
+        <div className="medical-records-section">
+          <h4>Patient Medical Records</h4>
+          {medicalRecords.length === 0 ? (
+            <p>No records available.</p>
+          ) : (
+            <ul>
+              {medicalRecords.map((record) => (
+                <li key={record.id}>
+                  <p className="file-name"><strong>{record.title || 'Untitled'}</strong></p>
+                  <a href={record.file_url} target="_blank" rel="noopener noreferrer">View Document</a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}}
+    //     } else if (activeTab === 'docs') {
+    //       return (
+    //              <div className="docs-tab">
+    //                  <input
+    //                     type="file"
+    //                      onChange={handleFileUpload}
+    //                  />
+    //                  {uploadedFiles.map((file, index) => (
+    //                      <div key={index}>
+    //                          <p className="file-name"><strong>{file.name}</strong></p>
+    //                          <a href={file.url} target="_blank" rel="noopener noreferrer">View File</a>
+    //                      </div>
+    //                  ))}
+    //              </div>
+    //          );
+    //     }
         
-    };
+    // };
     
   
    
@@ -721,7 +758,7 @@ const sendMessage = () => {
 
                 
             </div>
-            <div className="status-indicator">Doctor Status: {doctorJoined ? "🟢 Online" : "🔴 Offline"}</div>
+            {/* <div className="status-indicator">Doctor Status: {doctorJoined ? "🟢 Online" : "🔴 Offline"}</div> */}
             <div className="video-container">
             <div className="video-frame">
     {/* Remote Video */}

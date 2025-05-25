@@ -92,7 +92,7 @@ const MedicalRecords = ({ userId,user}) => {
           <li className="active">Medical Records</li>
           <li onClick={() => navigate('/medicineordering')}>E-Pharmacy</li>
           <li onClick={() => navigate('/payment')}>Billing</li>
-          <li onClick={() => navigate('/appointment')}>Feedback</li>
+          <li onClick={() => navigate('/feedback')}>Feedback</li>
         </ul>
            <div className="image" onClick={()=>navigate('/profile')}>
                <img id="profile-icon" src={profilelogo}></img>

@@ -1,0 +1,54 @@
+.feedback-container {
+    max-width: 500px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-family: 'Segoe UI', sans-serif;
+    /* margin-left:600px ; */
+  }
+  
+  .feedback-container h2 {
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .stars {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #ccc;
+    cursor: pointer;
+  }
+  
+  .star.filled {
+    color: #f5a623;
+  }
+  
+  textarea {
+    width: 100%;
+    height: 100px;
+    resize: none;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+    color:black
+  }
+  
+  button {
+    padding: 10px 25px;
+    font-size: 1rem;
+    background-color: #2e86de;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #1e70bf;
+  }
