@@ -77,7 +77,7 @@ app = FastAPI()
 # CORS middleware setup to allow React app on localhost:5173
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://healthcare-o0rt.onrender.com/"],  # Frontend React app
+    allow_origins=["https://healthcare-o0rt.onrender.com"],  # Frontend React app
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
