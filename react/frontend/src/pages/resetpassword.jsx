@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import './resetpassword.css'
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 function ResetPassword() {
   const query = new URLSearchParams(useLocation().search);

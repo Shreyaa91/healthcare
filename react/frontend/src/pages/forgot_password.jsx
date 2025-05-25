@@ -13,17 +13,22 @@ const ForgotPassword = () => {
     setStatus('');
     setError('');
 
-    try {
-        const response = await axios.post(
-          `${API_BASE_URL}/password-reset-mail`,
-          { email:email }, // Ensure this is in the correct format
-          { headers: { 'Content-Type': 'application/json' } }
-        );
-        setStatus(response.data.message);
-      } catch (err) {
-        setError(err.response?.data?.detail || 'Something went wrong');
-      }
-    };
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/password-reset-mail`,
+      { email },
+      { headers: { 'Content-Type': 'application/json' } }
+    );
+
+    // Show alert on success
+    alert("Reset link has been sent to your email.");
+
+    // Also update status to display on the UI (optional)
+    setStatus(response.data.detail || response.data.message || "Reset link sent.");
+  } catch (err) {
+    setError(err.response?.data?.detail);
+  }
+};
 
     return (
         <div className="forgot-container">
