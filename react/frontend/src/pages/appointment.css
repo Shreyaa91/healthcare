@@ -609,3 +609,8 @@ object-fit: cover;
   background: transparent;
   margin-left:20px;
 }
+
+#schedule-details{
+  background-color: transparent;
+  height:max-content;
+}

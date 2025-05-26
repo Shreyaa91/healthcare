@@ -120,7 +120,7 @@ const handleQuantityChange = (e, index) => {
             <h3 className="section-title">PAYMENT DETAILS</h3>
             <div className="summary-line">
               <span>MRP Total</span>
-              <span>₹{(totalPrice + discount).toFixed(2)}</span>
+              <span>₹{(totalPrice).toFixed(2)}</span>
             </div>
             <div className="summary-line">
               <span>Additional Discount</span>
@@ -128,7 +128,7 @@ const handleQuantityChange = (e, index) => {
             </div>
             <div className="summary-line">
               <span>Total Amount</span>
-              <span>₹{totalPrice.toFixed(2)}</span>
+              <span>₹{totalPrice.toFixed(2)-discount}</span>
             </div>
             <div className="summary-line">
               <span>Shipping Charges</span>
@@ -137,12 +137,18 @@ const handleQuantityChange = (e, index) => {
             <hr />
             <div className="summary-line total">
               <span>Total Payable</span>
-              <span>₹{(totalPrice + shippingCharge).toFixed(2)}</span>
+              <span>₹{(totalPrice-discount + shippingCharge).toFixed(2)}</span>
             </div>
             <div className="savings-box">
               Total Savings ₹{discount.toFixed(2)}
             </div>
-            <button className="proceed-btn" onClick={() => navigate('/Payment')}>
+            <button className="proceed-btn" onClick={() => navigate('/Payment', {
+  state: {
+    totalPrice,
+    discount,
+    shippingCharge,
+  },
+})}>
               PROCEED
             </button>
           </div>

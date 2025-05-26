@@ -5,6 +5,7 @@ import "./book_appointment.css"
 import profilelogo from "./image.png";
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
+
 const BookAppointment = ({user}) => {
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
@@ -97,7 +98,16 @@ const BookAppointment = ({user}) => {
   };
 
 
-
+  const formatTime = (timeString) => {
+  const [hour, minute] = timeString.split(':');
+  const date = new Date();
+  date.setHours(hour, minute);
+  return date.toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  });
+};
   useEffect(() => {
     fetchDoctors();
   }, []);
@@ -188,7 +198,14 @@ const BookAppointment = ({user}) => {
               
               <h3 id="slots">Available Slots</h3>
               <div className="slots-container">
-              {schedule.filter(s => s.is_available).map((slot, index) => (
+              {schedule.filter(s => {
+      if (!s.is_available) return false;
+
+      const slotStart = new Date(`${formatTime(s.available_date)}T${formatTime(s.start_time)}`);
+      const now = new Date();
+
+      return slotStart > now; // Only future slots
+    }).map((slot, index) => (
               <div key={index} className="slot-item">
                 <span className="slot-time">
                   <h5>Date:</h5>{slot.available_date} 

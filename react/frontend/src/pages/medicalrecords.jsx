@@ -3,7 +3,8 @@ import axios from "axios";
 import './medicalrecords.css'
 import { useNavigate } from "react-router-dom";
 import profilelogo from "./image.png";
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = import.meta.env.VITE_API_URL; 
+
 
 const MedicalRecords = ({ userId,user}) => {
   const [selectedFile, setSelectedFile] = useState(null);

@@ -7,6 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import profilelogo from "./image.png";
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
+
 const AppointmentPage = ({ user }) => {
   const token=localStorage.getItem("token");
   const navigate = useNavigate();
@@ -27,7 +28,17 @@ const AppointmentPage = ({ user }) => {
 
 
   
-  
+  const formatTime = (timeString) => {
+  const [hour, minute] = timeString.split(':');
+  const date = new Date();
+  date.setHours(hour, minute);
+  return date.toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  });
+};
+
   // State for schedule creation
   const [scheduleInput, setScheduleInput] = useState({
     available_date: "",
@@ -59,6 +70,8 @@ const AppointmentPage = ({ user }) => {
     
   };
   console.log(appointments);
+
+  
   useEffect(() => {
     if (user && user.role === "patient") {
       fetchAppointments();
@@ -174,13 +187,79 @@ const fetchPatientDetails = async (slotId,doctorId) => {
 
 
 
+// const createSchedule = async (scheduleInput) => {
+//     const now = new Date();
+//   const selectedDate = new Date(scheduleInput.available_date);
+//   const startTime = new Date(`${scheduleInput.available_date}T${scheduleInput.start_time}`);
+
+//   // Check if the selected start time is in the past
+//   if (startTime <= now) {
+//     alert("Schedule time must be greater than the current time");
+//     return;
+//   }
+//   try {
+//     const response = await fetch(`${API_BASE_URL}/doctor/${user.id}/schedule`, {
+//       method: "POST",
+//       headers: { "Authorization": `Bearer ${localStorage.getItem("token")}`, "Content-Type": "application/json" },
+//       body: JSON.stringify([scheduleInput]),
+//     });
+//     const data = await response.json();
+//     alert(data.message);
+//     fetchSchedule(user.id);
+//     setShowScheduleForm(false);
+//   } catch (error) {
+//     console.error("Error creating schedule:", error);
+//   }
+// };
+
 const createSchedule = async (scheduleInput) => {
+  const now = new Date();
+  const startTime = new Date(`${scheduleInput.available_date}T${scheduleInput.start_time}`);
+  const endTime = new Date(`${scheduleInput.available_date}T${scheduleInput.end_time}`);
+
+  // Check: Start time must be in future
+  if (startTime <= now) {
+    alert("Start time must be greater than the current time");
+    return;
+  }
+
+  // Check: End time must be after start time
+  if (endTime <= startTime) {
+    alert("End time must be greater than start time");
+    return;
+  }
+
+  // Check: No overlapping schedules
+  const overlapping = schedule.some((slot) => {
+    const slotStart = new Date(`${slot.available_date}T${slot.start_time}`);
+    const slotEnd = new Date(`${slot.available_date}T${slot.end_time}`);
+
+    return (
+      slot.available_date === scheduleInput.available_date &&
+      (
+        (startTime >= slotStart && startTime < slotEnd) || // start inside another slot
+        (endTime > slotStart && endTime <= slotEnd) ||     // end inside another slot
+        (startTime <= slotStart && endTime >= slotEnd)     // completely overlaps another slot
+      )
+    );
+  });
+
+  if (overlapping) {
+    alert("This slot overlaps with an existing one.");
+    return;
+  }
+
+  // Create schedule if all checks pass
   try {
     const response = await fetch(`${API_BASE_URL}/doctor/${user.id}/schedule`, {
       method: "POST",
-      headers: { "Authorization": `Bearer ${localStorage.getItem("token")}`, "Content-Type": "application/json" },
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify([scheduleInput]),
     });
+
     const data = await response.json();
     alert(data.message);
     fetchSchedule(user.id);
@@ -298,29 +377,44 @@ const cancelAppointment = async (appointment) => {
 };
 
 
-  const updateScheduleSlot = async (slotId, updatedSlot) => {
-    console.log(slotId)
-    try {
-     
-      const response = await fetch(`${API_BASE_URL}/doctor/${user.id}/schedule/${slotId}`, {
-        method: "PUT",
-        headers: {
-          "Authorization": `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedSlot),
-      });
-      const data = await response.json();
-      alert(data.message);
-      setEditingSlot(null);
-      fetchSchedule(user.id);
-    } catch (error) {
-      console.error("Error updating slot:", error);
+ const updateScheduleSlot = async (slotId, updatedSlot) => {
+  try {
+    const slotDateTime = new Date(`${updatedSlot.available_date}T${updatedSlot.start_time}`);
+    const now = new Date();
+
+    if (slotDateTime <= now) {
+      alert("Appointment time must be in the future.");
+      return; // prevent update
     }
-    if (error.response.status === 400) {
-      alert("Cannot update a booked schedule");
+
+    const response = await fetch(`${API_BASE_URL}/doctor/${user.id}/schedule/${slotId}`, {
+      method: "PUT",
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedSlot),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      if (response.status === 400) {
+        alert(errorData.message || "Cannot update a booked schedule");
+      } else {
+        alert("Failed to update schedule slot");
+      }
+      return;
     }
-  };
+
+    const data = await response.json();
+    alert(data.message);
+    setEditingSlot(null);
+    fetchSchedule(user.id);
+  } catch (error) {
+    console.error("Error updating slot:", error);
+    alert("An unexpected error occurred while updating the slot");
+  }
+};
 
 
   const deleteScheduleSlot = async (slotId) => {
@@ -379,57 +473,6 @@ return (
         <p className="loading-text">Loading user...</p>
       ) : user.role === "patient" ? (
         (() => {
-          // const upcomingAppointments = Array.isArray(appointments)
-          // ? appointments.filter((appointment) => {
-          //     const appointmentDate = new Date(appointment.date);
-          //     const now = new Date();
-          //     return appointment.status === "upcoming" && !appointmentDate < now;
-          //   })
-          // : [];
-
-          //USE THIS
-  //         const upcomingAppointments = Array.isArray(appointments)
-  // ? appointments.filter((appointment) => {
-  //     try {
-  //       const datePart = appointment.appointment_date; // e.g. "2025-05-05"
-  //       let timePart = appointment.start_time; // e.g. "18:00" or "18:00:00"
-        
-  //       // Ensure time is in HH:mm:ss format
-  //       if (/^\d{2}:\d{2}$/.test(timePart)) {
-  //         timePart += ":00"; // convert "18:00" to "18:00:00"
-  //       }
-        
-  //       // Debug the values
-  //       console.log("Date part:", datePart);
-  //       console.log("Time part:", timePart);
-        
-  //       // Make sure we're using ISO 8601 format with timezone
-  //       const dateTimeString = `${datePart}T${timePart}`;
-  //       console.log("DateTime string:", dateTimeString);
-        
-  //       // Try parsing with explicit timezone handling
-  //       const appointmentDateTime = new Date(dateTimeString);
-  //       const now = new Date();
-        
-  //       // Check if date is valid
-  //       if (isNaN(appointmentDateTime.getTime())) {
-  //         console.error("Invalid date format:", dateTimeString);
-  //         return false;
-  //       }
-        
-  //       console.log("NOW:", now);
-  //       console.log("Appointment DATETIME:", appointmentDateTime);
-        
-  //       return (
-  //         appointment.status === "upcoming" &&
-  //         appointmentDateTime.getTime() >= now.getTime()
-  //       );
-  //     } catch (error) {
-  //       console.error("Error parsing appointment date:", error);
-  //       return false;
-  //     }
-  //   })
-  // : [];
 
   const upcomingAppointments = Array.isArray(appointments)
   ? appointments.filter((appointment) => {
@@ -443,12 +486,12 @@ return (
         }
         
         // Debug the values
-        console.log("Date part:", datePart);
-        console.log("Time part:", timePart);
+        // console.log("Date part:", datePart);
+        // console.log("Time part:", timePart);
         
         // Combine date and time to form a full datetime string
         const dateTimeString = `${datePart}T${timePart}`;
-        console.log("DateTime string:", dateTimeString);
+        // console.log("DateTime string:", dateTimeString);
         
         // Parse the combined date-time string
         const appointmentDateTime = new Date(dateTimeString);
@@ -460,8 +503,8 @@ return (
           return false;
         }
         
-        console.log("NOW:", now);
-        console.log("Appointment DATETIME:", appointmentDateTime);
+        // console.log("NOW:", now);
+        // console.log("Appointment DATETIME:", appointmentDateTime);
         
         // Calculate the difference in milliseconds
         const diffInMs = appointmentDateTime - now;
@@ -500,11 +543,7 @@ return (
               const diffInMs = appointmentStart - now;
               return diffInMs <= 30 * 60 * 1000 && diffInMs > 0;
             };
-            // const handle Consultation = (appointment) => {
-            //   // navigate(`/consultation?channel=${appointment.channel_name}`);
-            //   navigate('/consultation')
-            // };
-
+           
           return (
             <>
               <div className="card">
@@ -519,16 +558,11 @@ return (
                         <div className="appointment-info">
                           <p><strong>Doctor:</strong> {appointment.doctor_name}</p>
                           <p><strong>Date:</strong> {appointment.appointment_date}</p>
-                          <p><strong>Time:</strong> {appointment.start_time} - {appointment.end_time}</p>
+                          <p><strong>Time:</strong> {formatTime(appointment.start_time)} - {formatTime(appointment.end_time)}</p>
                         </div>
                         <div className="appointment-actions">
                           <button id="reschedule" onClick={() => handleRescheduleClick(appointment)}>Reschedule</button>
                           <button id="cancel" onClick={() => cancelAppointment(appointment)}>Cancel</button>
-                          {/* {isWithin30Minutes(appointment.appointment_date, appointment.start_time) && (
-                  <button id="join" onClick={() => handleJoinConsultation(appointment)}>
-                    Join Consultation
-                  </button>
-                )} */}
                         </div>
                       </div>
                     ))
@@ -545,7 +579,7 @@ return (
                       <div key={appointment.id} className="appointment-item">
                          <p><strong>Doctor:</strong> {appointment.doctor_name}</p>
                           <p><strong>Date:</strong> {appointment.appointment_date}</p>
-                          <p><strong>Time:</strong> {appointment.start_time} - {appointment.end_time}</p>
+                          <p><strong>Time:</strong> {formatTime(appointment.start_time)} - {formatTime(appointment.end_time)}</p>
                       </div>
                     ))
                   ) : (
@@ -554,8 +588,7 @@ return (
                 </div>
               </div>
 
-              {/* Create New Appointment Button */}
-              
+                         
 
               {/* Rescheduling Popup */}
               {rescheduling && (
@@ -567,11 +600,17 @@ return (
 
 
     <div className="drawer-body">
-      {rescheduleSlots.length > 0 ? (
-        rescheduleSlots.map((slot) => (
+      {rescheduleSlots.filter((slot) => {
+        const startDateTime = new Date(`${slot.available_date}T${slot.start_time}`);
+        return startDateTime > new Date();
+      }).length > 0 ? (
+        rescheduleSlots.filter((slot) => {
+            const startDateTime = new Date(`${slot.available_date}T${slot.start_time}`);
+            return startDateTime > new Date();
+          }).map((slot) => (
           <div key={slot.id} className="slot-card">
             <p><strong>Date:</strong> {slot.available_date}</p>
-            <p><strong>Time:</strong> {slot.start_time} - {slot.end_time}</p>
+            <p><strong>Time:</strong> {formatTime(slot.start_time)} - {formatTime(slot.end_time)}</p>
             <button className="confirm-btn" onClick={() => rescheduleAppointment(rescheduling, slot.id)}>
               Confirm
             </button>
@@ -621,7 +660,7 @@ return (
                     {schedule.filter(s => s.is_available).map((slot, index) => (
                       <div key={index} className="slot-item">
                         <span className="slot-time">
-                          {slot.available_date} - {slot.start_time} to {slot.end_time}
+                          {slot.available_date} - {formatTime(slot.start_time)} to {formatTime(slot.end_time)}
                         </span>
                         <button id="booknow" onClick={() => bookAppointment(slot)} className="book-button">
                           Book Now
@@ -640,83 +679,126 @@ return (
           <div className="schedule-list">
             <div className="card">
               <h2>My Schedule</h2>
-              {schedule.length === 0 ? (
-                <p>No schedule found</p>
-              ) : (
-                schedule.map((slot) => (
-                  <div
-                    key={slot.id}
-                    className="schedule-item"
-                    onClick={() => {
-                      console.log("Slot clicked:", slot);
-                      setSelectedSlot(slot);
-                      if (!slot.is_available && slot.doctor_id) {
-                        fetchPatientDetails(slot.id, slot.doctor_id);
-                      } else {
-                        setSelectedPatient(null);
-                      }
-                    }}
-                  >
-                    {editingSlot?.id === slot.id ? (
-                      <>
-                        <input
-                          type="date"
-                          name="available_date"
-                          value={editingSlot.available_date}
-                          onChange={(e) =>
-                            setEditingSlot({
-                              ...editingSlot,
-                              available_date: e.target.value,
-                            })
-                          }
-                          required
-                        />
-                        <input
-                          type="time"
-                          name="start_time"
-                          value={editingSlot.start_time}
-                          onChange={(e) =>
-                            setEditingSlot({
-                              ...editingSlot,
-                              start_time: e.target.value,
-                            })
-                          }
-                          required
-                        />
-                        <input
-                          type="time"
-                          name="end_time"
-                          value={editingSlot.end_time}
-                          onChange={(e) =>
-                            setEditingSlot({
-                              ...editingSlot,
-                              end_time: e.target.value,
-                            })
-                          }
-                          required
-                        />
-                        <button onClick={() => updateScheduleSlot(slot.id, editingSlot)}>
-                          Save
-                        </button>
-                        <button onClick={() => setEditingSlot(null)}>
-                          Cancel
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <>{slot.available_date} - {slot.start_time} to {slot.end_time} </>(
-                        {slot.is_available ? "Available" : "Booked"})
-                        <button onClick={() => setEditingSlot(slot)}>
-                          Update
-                        </button>
-                        <button onClick={() => deleteScheduleSlot(slot.id)}>
-                          Delete
-                        </button>
-                      </>
-                    )}
-                  </div>
-                ))
-              )}
+
+{schedule.length === 0 ? (
+  <p>No schedule found</p>
+) : (
+  <>
+    {/* Booked Appointments Section */}
+    <h3>Booked Appointments</h3>
+    {schedule.filter((slot) =>{
+      const slotDateTime = new Date(`${slot.available_date}T${slot.start_time}`);
+      return !slot.is_available && slotDateTime > new Date();
+    }).length === 0 ? (
+      <p>No booked appointments</p>
+    ) : (
+      schedule
+        .filter((slot) => {
+          const slotDateTime = new Date(`${slot.available_date}T${slot.start_time}`);
+          return !slot.is_available && slotDateTime > new Date();
+        })
+        .map((slot) => (
+          <div
+            key={slot.id}
+            className="schedule-item"
+            onClick={() => {
+              setSelectedSlot(slot);
+              if (slot.doctor_id) {
+                fetchPatientDetails(slot.id, slot.doctor_id);
+              }
+            }}
+          >
+            <p id="schedule-details">
+              {slot.available_date} - {formatTime(slot.start_time)} to {formatTime(slot.end_time)}
+            </p>
+          </div>
+        ))
+    )}
+
+    {/* Available Slots Section */}
+    <h3>Available Slots</h3>
+    {schedule.filter((slot) => {
+      const slotDateTime = new Date(`${slot.available_date}T${slot.start_time}`);
+      return slot.is_available && slotDateTime > new Date();
+    }).length === 0 ? (
+      <p>No available slots</p>
+    ) : (
+      schedule
+        .filter((slot) =>{
+          const slotDateTime = new Date(`${slot.available_date}T${slot.start_time}`);
+          return slot.is_available && slotDateTime > new Date();
+        })
+        .map((slot) => (
+          <div
+            key={slot.id}
+            className="schedule-item"
+            onClick={() => {
+              setSelectedSlot(slot);
+              setSelectedPatient(null);
+            }}
+          >
+            {editingSlot?.id === slot.id ? (
+              <>
+                <input
+                  type="date"
+                  name="available_date"
+                  value={editingSlot.available_date}
+                  onChange={(e) =>
+                    setEditingSlot({
+                      ...editingSlot,
+                      available_date: e.target.value,
+                    })
+                  }
+                  required
+                />
+                <input
+                  type="time"
+                  name="start_time"
+                  value={editingSlot.start_time}
+                  onChange={(e) =>
+                    setEditingSlot({
+                      ...editingSlot,
+                      start_time: e.target.value,
+                    })
+                  }
+                  required
+                />
+                <input
+                  type="time"
+                  name="end_time"
+                  value={editingSlot.end_time}
+                  onChange={(e) =>
+                    setEditingSlot({
+                      ...editingSlot,
+                      end_time: e.target.value,
+                    })
+                  }
+                  required
+                />
+                <button onClick={() => updateScheduleSlot(slot.id, editingSlot)}>
+                  Save
+                </button>
+                <button onClick={() => setEditingSlot(null)}>Cancel</button>
+              </>
+            ) : (
+              <>
+                <p id="schedule-details">
+                  {slot.available_date} - {formatTime(slot.start_time)} to {formatTime(slot.end_time)}
+                </p>
+                <button onClick={() => setEditingSlot(slot)}>Update</button>
+                <button onClick={() => deleteScheduleSlot(slot.id)}>Delete</button>
+              </>
+            )}
+          </div>
+        ))
+    )}
+  </>
+)}
+
+
+
+
+    
 
               <div className="create-button-div">
                 <button
@@ -791,7 +873,7 @@ return (
                   <p className="a"><strong>Email: </strong> {selectedPatient.email}</p>
                   <p className="a"><strong>Gender: </strong> {selectedPatient.gender}</p>
                   <p className="a"><strong>Date: </strong> {selectedSlot.available_date}</p>
-                  <p className="a"><strong>Time: </strong> {selectedSlot.start_time} - {selectedSlot.end_time}</p>
+                  <p className="a"><strong>Time: </strong> {formatTime(selectedSlot.start_time)} - {formatTime(selectedSlot.end_time)}</p>
                 </>
               ) : (
                 <p>Loading patient details...</p>
@@ -822,439 +904,4 @@ export default AppointmentPage;
 
 
 
-
-
-
-//WORKING 
-  
-//   return (
-//     <div className="appointment-container">
-//         {/* Left Panel */}
-//       <div className="sidebar">
-        
-//         <ul>
-//           <li className="active">Appointments</li>
-//           <li>Consultation</li>
-//           <li>Medical Records</li>
-//           <li>E-Pharmacy</li>
-//           <li>Billing</li>
-//           <li>Settings</li>
-//         </ul>
-//       </div>
-
-
-//     <div className="content">
-//       {!user ? (
-//         <p className="loading-text">Loading user...</p>
-//       ) : user.role === "patient" ? (
-//         <div className="card">
-//           <h2>Select a Doctor</h2>
-          
-//           {/* Displaying doctors as cards instead of a dropdown */}
-//           <div className="doctors-list">
-//             {doctors.map((doctor) => (
-//               <div
-//                 key={doctor.id}
-//                 className="doctor-card"
-//                 onClick={() => {
-//                   setSelectedDoctor(doctor);
-//                   fetchSchedule(doctor.id);
-//                 }}
-//               >
-//                 <h3>{doctor.name}</h3>
-//                 <p>Specialization: {doctor.specialization}</p>
-//               </div>
-//             ))}
-//           </div>
-
-//           {selectedDoctor && (
-//             <div className="doctor-details">
-//               <h3>Dr. {selectedDoctor.name}</h3>
-//               <p>Specialization: {selectedDoctor.specialization}</p>
-//               <p>Experience: {selectedDoctor.experience} years</p>
-              
-//               <h3>Available Slots</h3>
-//               <div className="slots-container">
-//                 {schedule.filter(s => s.is_available).map((slot, index) => (
-//                   <button key={index} onClick={() => bookAppointment(slot)} className="slot-button">
-//                     {slot.available_date} - {slot.start_time} to {slot.end_time}
-//                   </button>
-//                 ))}
-//               </div>
-//             </div>
-//           )}
-//         </div>
-//       ) : (
-//         <div className="card">
-//           <h2>My Schedule</h2>
-//           {schedule.length === 0 ? (
-//             <p>No schedule found</p>
-//           ) : (
-//             schedule.map((slot) => (
-//               <div key={slot.id} className="schedule-item" onClick={() => setSelectedSlot(slot)}>
-//                 {editingSlot?.id === slot.id ? (
-//                   <>
-//                     <input type="date" name="available_date" value={editingSlot.available_date} onChange={(e) => setEditingSlot({ ...editingSlot, available_date: e.target.value })} required />
-//                     <input type="time" name="start_time" value={editingSlot.start_time} onChange={(e) => setEditingSlot({ ...editingSlot, start_time: e.target.value })} required />
-//                     <input type="time" name="end_time" value={editingSlot.end_time} onChange={(e) => setEditingSlot({ ...editingSlot, end_time: e.target.value })} required />
-//                     <button onClick={() => updateScheduleSlot(slot.id,editingSlot)}>Save</button>
-//                     <button onClick={() => setEditingSlot(null)}>Cancel</button>
-//                   </>
-//                 ) : (
-//                   <>
-//                     {slot.available_date} - {slot.start_time} to {slot.end_time} ({slot.is_available ? "Available" : "Booked"})
-//                     <button onClick={() => setEditingSlot(slot)}>Update</button>
-//                     <button onClick={() => deleteScheduleSlot(slot.id)}>Delete</button>
-//                   </>
-//                 )}
-//               </div>
-//             ))
-//           )}
-        
-//         <div className="create-button-div">
-//             <button onClick={() => setShowScheduleForm(true)} className="create-button">
-//             Create Schedule
-//           </button>
-//         </div>
-//                 {showScheduleForm && (
-//             <div className="schedule-form">
-//               {/* <h3>Create Schedule</h3> */}
-//               <input type="date" name="available_date" value={scheduleInput.available_date} onChange={handleInputChange} required />
-//               <input type="time" name="start_time" value={scheduleInput.start_time} onChange={handleInputChange} required />
-//               <input type="time" name="end_time" value={scheduleInput.end_time} onChange={handleInputChange} required />
-//               <div className="submit-button-div"><button onClick={()=>createSchedule(scheduleInput)}>Submit</button></div>
-//             </div>
-//           )}
-               
-//         </div>
-        
-//       )}
-//     </div>
-//   </div>
-//   );
-// };
-
-
-
-// return (
-//   <div className="appointment-container">
-//     {/* Left Panel */}
-//     <div className="sidebar">
-//       <ul>
-//         <li className="active">Appointments</li>
-//         <li>Consultation</li>
-//         <li>Medical Records</li>
-//         <li>E-Pharmacy</li>
-//         <li>Billing</li>
-//         <li>Settings</li>
-//       </ul>
-//     </div>
-
-//     {/* Main Content */}
-//     <div className="content">
-//       {!user ? (
-//         <p className="loading-text">Loading user...</p>
-//       ) : user.role === "patient" ? (
-//         (() => {
-//           const upcomingAppointments = Array.isArray(appointments)?appointments.filter(
-//             (appointment) => appointment.status === "upcoming"
-//           ):[];
-      
-//           const pastAppointments = Array.isArray(appointments)?appointments
-//             .filter((appointment) => appointment.status === "completed")
-//             .slice(-2):[]; // Get last 2 past appointments
-//         return(
-//         <div className="card">
-//           <h2>My Appointments</h2>
-          
-//           {/* Upcoming Appointments */}
-//           <h3>Upcoming Appointments</h3>
-//           <div className="appointments-list">
-//             {upcomingAppointments.length > 0 ? (
-//               upcomingAppointments.map((appointment) => (
-//                 <div key={appointment.id} className="appointment-item">
-//                   <div className="appointment-info">
-//                   <p><strong>Doctor:</strong> {appointment.doctor_name}</p>
-//                   <p><strong>Date:</strong> {appointment.appointment_date}</p>
-//                   <p><strong>Time:</strong> {appointment.start_time} - {appointment.end_time}</p>
-//                   </div>
-//                   <div className="appointment-actions">
-
-//                   <button id="reschedule" onClick={() => handleRescheduleClick(appointment)}>Reschedule</button>
-//                   <button id="cancel" onClick={() => cancelAppointment(appointment.schedule_id)}>Cancel</button>
-//                   </div>
-//                 </div>
-//               ))
-//             ) : (
-//               <p>None.</p>
-//             )}
-//           </div>
-          
-//           {/* Past Appointments */}
-//           <h3>Past Appointments</h3>
-//           <div className="appointments-list">
-//             {pastAppointments.length>0 ? (
-//               pastAppointments.slice(-2).map((appointment) => (
-//               <div key={appointment.id} className="appointment-item">
-//                 <p><strong>Doctor:</strong> {appointment.doctor.name}</p>
-//                 <p><strong>Date:</strong> {appointment.date}</p>
-//                 <p><strong>Time:</strong> {appointment.start_time} - {appointment.end_time}</p>
-//               </div>
-            
-//           ))
-//         ):(
-//             <p>None</p>
-//           )}
-//           </div>
-
-//           {/* Create New Appointment Button */}
-//           {/* <button className="create-button" onClick={() => setShowDoctorList(!showDoctorList)}> */}
-//           <button className="create-button" onClick={() =>navigate("/bookappointment")}>
-//             {showDoctorList ? "Back" : "Create New Appointment"}
-//           </button>
-
-//           {rescheduling && (
-//       <div className="reschedule-popup">
-//         <h4>Select a new time slot</h4>
-//         <ul>
-//           {rescheduleSlots.length > 0 ? (
-//             rescheduleSlots.map((slot) =>{
-//               console.log("Slot details:", slot); 
-            
-//               return (
-//               <li key={slot.id}>
-//                 <button onClick={() => rescheduleAppointment(rescheduling, slot.id)}>
-//                   {slot.available_date} {slot.start_time} - {slot.end_time}
-//                 </button>
-//               </li>
-//               );
-//         })
-//           ) : (
-//             <p>No available slots.</p>
-//           )}
-//         </ul>
-//         <button onClick={() => setRescheduling(null)}>Cancel</button>
-//       </div>
-//     )}
-          
-//           {/* Show Doctor List if Creating Appointment */}
-//           {showDoctorList && (
-//             <div className="doctors-list">
-//               {doctors.map((doctor) => (
-//                 <div
-//                   key={doctor.id}
-//                   className="doctor-card"
-//                   onClick={() => {
-//                     setSelectedDoctor(doctor);
-//                     fetchSchedule(doctor.id);
-//                   }}
-//                 >
-//                   <h3>{doctor.name}</h3>
-//                   <p>Specialization: {doctor.specialization}</p>
-//                 </div>
-//               ))}
-//             </div>
-//           )}
-          
-//           {/* Show Doctor's Available Slots if Selected */}
-//           {selectedDoctor && (
-//             <div className="doctor-details">
-//               <h3>Dr. {selectedDoctor.name}</h3>
-//               <p>Specialization: {selectedDoctor.specialization}</p>
-//               <p>Experience: {selectedDoctor.experience} years</p>
-              
-//               <h3>Available Slots</h3>
-//               <div className="slots-container">
-//               {schedule.filter(s => s.is_available).map((slot, index) => (
-//               <div key={index} className="slot-item">
-//                 <span className="slot-time">
-//                   {slot.available_date} - {slot.start_time} to {slot.end_time}
-//                 </span>
-//                 <button id="booknow" onClick={() => bookAppointment(slot)} className="book-button">
-//                   Book Now
-//                 </button>
-//               </div>
-//             ))}
-//               </div>
-//             </div>
-//           )}
-//         </div>
-//         );
-//       })()
-//       ) : (
-//         <div className="schedule-container">
-//           {/* Left Side: Schedule */}
-//           <div className="schedule-list">
-//             <div className="card">
-//               <h2>My Schedule</h2>
-//               {schedule.length === 0 ? (
-//                 <p>No schedule found</p>
-//               ) : (
-//                 schedule.map((slot) => (
-                  
-//                   <div
-//                     key={slot.id}
-//                     className="schedule-item"
-//                     onClick={() => {
-//                       console.log("Slot clicked:", slot);
-//                       setSelectedSlot(slot);
-//                       if (!slot.is_available && slot.doctor_id) {
-//                         fetchPatientDetails(slot.id, slot.doctor_id);
-//                       } else {
-//                         setSelectedPatient(null);
-//                       }
-//                     }}
-//                   >
-//                     {editingSlot?.id === slot.id ? (
-//                       <>
-//                         <input
-//                           type="date"
-//                           name="available_date"
-//                           value={editingSlot.available_date}
-//                           onChange={(e) =>
-//                             setEditingSlot({
-//                               ...editingSlot,
-//                               available_date: e.target.value,
-//                             })
-//                           }
-//                           required
-//                         />
-//                         <input
-//                           type="time"
-//                           name="start_time"
-//                           value={editingSlot.start_time}
-//                           onChange={(e) =>
-//                             setEditingSlot({
-//                               ...editingSlot,
-//                               start_time: e.target.value,
-//                             })
-//                           }
-//                           required
-//                         />
-//                         <input
-//                           type="time"
-//                           name="end_time"
-//                           value={editingSlot.end_time}
-//                           onChange={(e) =>
-//                             setEditingSlot({
-//                               ...editingSlot,
-//                               end_time: e.target.value,
-//                             })
-//                           }
-//                           required
-//                         />
-//                         <button
-//                           onClick={() =>
-//                             updateScheduleSlot(slot.id, editingSlot)
-//                           }
-//                         >
-//                           Save
-//                         </button>
-//                         <button onClick={() => setEditingSlot(null)}>
-//                           Cancel
-//                         </button>
-//                       </>
-//                     ) : (
-//                       <>
-//                         {slot.available_date} - {slot.start_time} to{" "}
-//                         {slot.end_time} (
-//                         {slot.is_available ? "Available" : "Booked"})
-//                         <button onClick={() => setEditingSlot(slot)}>
-//                           Update
-//                         </button>
-//                         <button onClick={() => deleteScheduleSlot(slot.id)}>
-//                           Delete
-//                         </button>
-//                       </>
-//                     )}
-//                   </div>
-//                 ))
-//               )}
-
-//               <div className="create-button-div">
-//                 <button
-//                   onClick={() => setShowScheduleForm((prev) => !prev)}
-//                   className="create-button"
-//                 >
-//                   Create Schedule
-//                 </button>
-//               </div>
-
-//               {showScheduleForm && (
-//                 <div className="schedule-form">
-//                   <label htmlFor="available_date">Date</label>
-//                   <input
-//                    id="available_date"
-//                     type="date"
-//                     name="available_date"
-//                     value={scheduleInput.available_date}
-//                     onChange={handleInputChange}
-//                     required
-//                   />
-//                    <label htmlFor="start_time">Start Time</label>
-//                   <input
-//                     type="time"
-//                     id="start_time"
-//                     name="start_time"
-//                     value={scheduleInput.start_time}
-//                     onChange={handleInputChange}
-//                     required
-//                   />
-
-//                   <label htmlFor="end_time">End Time</label>
-//                   <input
-//                     type="time"
-//                      id="end_time"
-//                     name="end_time"
-//                     value={scheduleInput.end_time}
-//                     onChange={handleInputChange}
-//                     required
-//                   />
-//                   <div className="submit-button-div">
-//                     <button onClick={() => createSchedule(scheduleInput)}>
-//                       Submit
-//                     </button>
-//                   </div>
-//                 </div>
-//               )}
-//             </div>
-//           </div>
-              
-//           {/* Right Side: Patient Details */}
-//           <div className="patient-details">
-//             {selectedSlot ? (
-//               selectedSlot.is_available ? (
-//                 <p>No booking</p>
-//               ) : selectedPatient ?(
-//                 <>
-//                   <h3>Details</h3>
-//                   <p className='a'>
-//                     <strong>Name:</strong> {selectedPatient.name}
-//                   </p>
-//                   <p className='a'>
-//                     <strong>Age:</strong> {selectedPatient.age}
-//                   </p>
-//                   <p className='a'>
-//                     <strong>Email:</strong> {selectedPatient.email}
-//                   </p>
-//                   <p className='a'>
-//                     <strong>Gender:</strong> {selectedPatient.gender}
-//                   </p>
-//                   <p className='a'>
-//                     <strong>Date:</strong> {selectedSlot.available_date}
-//                   </p>
-//                   <p className='a'>
-//                     <strong>Time:</strong> {selectedSlot.start_time} - {selectedSlot.end_time}
-//                   </p>
-//                 </>
-//               ):(<p>Loading patient details...</p>)
-//             ) : (
-//               <p>Select a slot to view details</p>
-//             )}
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   </div>
-// );
 

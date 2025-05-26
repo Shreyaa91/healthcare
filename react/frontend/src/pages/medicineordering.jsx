@@ -12,12 +12,24 @@ const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 
 
-const dummyMedicines = [
+  const dummyMedicines = [
   { id: '1', name: 'Paracetamol', price: 10 },
   { id: '2', name: 'Ibuprofen', price: 20 },
   { id: '3', name: 'Amoxicillin', price: 30 },
+  { id: '4', name: 'Cetirizine', price: 15 },
+  { id: '5', name: 'Azithromycin', price: 50 },
+  { id: '6', name: 'Pantoprazole', price: 25 },
+  { id: '7', name: 'Dolo 650', price: 12 },
+  { id: '8', name: 'Disprin', price: 8 },
+  { id: '9', name: 'Calpol', price: 11 },
 ];
+
+
 const products = [
+  'Calpol',
+  'Pantoprazole',
+  'Disprin',
+  'Dolo 650',
   "vicks",
   "vicks vaporub",
   "vicks baby",

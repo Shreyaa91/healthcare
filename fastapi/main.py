@@ -74,10 +74,11 @@ from fastapi.middleware.cors import CORSMiddleware
 # Initialize FastAPI app
 app = FastAPI()
 
-# CORS middleware setup to allow React app on localhost:5173
+# CORS middleware setup to allow React app
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://healthcare-o0rt.onrender.com"],  # Frontend React app
+    
+    allow_origins=["https://healthcare-o0rt.onrender.com"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -798,6 +799,7 @@ def get_medical_records(user=Depends(get_current_user)):
 @app.get("/records/{id}")
 def get_medical_records(id:str):
     user_id = id
+    print(user_id)
     result = supabase.table("medical_certificates").select("*").eq("user_id", user_id).order("uploaded_at", desc=True).execute()
     data = result.data
 

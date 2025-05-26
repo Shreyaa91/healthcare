@@ -3,8 +3,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import "./consultation.css";
 import {io} from 'socket.io-client';
+import axios from "axios";
 import { FiMic, FiMicOff, FiVideo, FiVideoOff, FiMonitor, FiStopCircle, FiPhoneOff, FiCircle } from "react-icons/fi";
 const API_BASE_URL = import.meta.env.VITE_API_URL;
+
 
 
 const Consultation = ({user}) => {
@@ -84,29 +86,36 @@ const [patientId, setPatientId] = useState(null);
   };
 }, [channel_name]);
 
-
+console.log("📌 Live values - appointment:", appointment);
+console.log("📌 Live values - user:", user?user:"none");
 useEffect(() => {
-   console.log("USEEFFECT triggered with appointment.id:", appointment?.id, "and user.role:", user?.role);
-const fetchPatientAndRecords = async () => {
-  console.log("PATIENT ID:", appointment.patient_id);
-  try {
-    if (user.role === 'specialist' && appointment.id) {
-      const patientId = appointment.patient_id;
-      setPatientId(patientId);
+  console.log("🔥 useEffect triggered with appointment:", appointment, "and user.role:", user?.role);
 
-      const res2 = await axios.get(`/records/${appointment.patient_id}`);
-      console.log("Fetched medical records:", res2.data.records);  // <-- log API response
+  const fetchPatientAndRecords = async () => {
+    console.log("🩺 Patient ID:", appointment?.patient_id);
+    try {
+  if (user?.role === 'specialist' && appointment?.id) {
+    const res = await axios.get(`${API_BASE_URL}/records/${appointment?.patient_id}`);
+    console.log("📦 Full Axios response:", res);
 
-      setMedicalRecords(res2.data.records);  // setting state
+    if (res.data && res.data.records) {
+      console.log("✅ Fetched medical records:", res.data.records);
+      setMedicalRecords(res.data.records);
+    } else {
+      console.warn("⚠️ No records field found in response", res.data);
+      setMedicalRecords([]);
     }
-  } catch (err) {
-    console.error("Error fetching patient or records", err);
+  } else {
+    console.log("⛔ Skipping fetch — missing data");
   }
-};
+} catch (err) {
+  console.error("❌ Error fetching records:", err);
+}
 
-    fetchPatientAndRecords();
-    
-}, [appointment?.id, user?.role]);
+  };
+
+  fetchPatientAndRecords();
+}, [appointment, user]);  // ✅ changed from appointment?.id to appointment
 
 useEffect(() => {
   console.log("MEDICAL-RECORDS updated:", medicalRecords);
@@ -386,15 +395,16 @@ const sendMessage = () => {
       {/* Medical Records (visible to doctors only) */}
       {user.role === 'specialist' && (
         <div className="medical-records-section">
+          {console.log("Rendering Medical Records:", medicalRecords?medicalRecords:"No records")}
           <h4>Patient Medical Records</h4>
-          {medicalRecords.length === 0 ? (
+          {medicalRecords?.length === 0 ? (
             <p>No records available.</p>
           ) : (
             <ul>
-              {medicalRecords.map((record) => (
+              {medicalRecords?.map((record) => (
                 <li key={record.id}>
-                  <p className="file-name"><strong>{record.title || 'Untitled'}</strong></p>
-                  <a href={record.file_url} target="_blank" rel="noopener noreferrer">View Document</a>
+                  <p className="file-name"><strong>{record.file_name || 'Untitled'}</strong></p>
+                  <a href={record.url} target="_blank" rel="noopener noreferrer">View Document</a>
                 </li>
               ))}
             </ul>

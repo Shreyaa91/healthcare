@@ -5,6 +5,7 @@ import './profile.css'
 import profilelogo from "./image.png";
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
+
 const ProfilePage = ({user}) => {
   const [profile, setProfile] = useState(null);
   const [editMode, setEditMode] = useState(false);
@@ -100,62 +101,6 @@ const ProfilePage = ({user}) => {
 
   if (!profile) return <p>Loading profile...</p>;
 
-//  return (
-//     <div className="main-container">
-//     <div className="sidebar">
-//       <ul>
-//         <li onClick={()=>navigate('/appointment')}className="active">Appointments</li>
-//         <li onClick={()=>navigate('/consultation')}>Consultation</li>
-//         <li onClick={()=>navigate('/medicalrecords')}>Medical Records</li>
-//         <li onClick={()=>navigate('/medicineordering')}>E-Pharmacy</li>
-//         <li onClick={()=>navigate('/payment')}>Billing</li>
-//         <li onClick={()=>navigate('/appointment')}>Settings</li>
-//       </ul>
-//     </div>
-// <div className="profile-wrapper">
-//   <div className="profile-container">
-//     <h2>Profile</h2>
-//     <p><strong>Username:</strong> {profile.username}</p>
-//     <p><strong>Role:</strong> {profile.role}</p>
-
-//     {editMode ? (
-//       <>
-//         <div className="profile-field">
-//           <label>Email:</label>
-//           <input
-//             type="email"
-//             value={formData.email}
-//             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-//           />
-//         </div>
-//         <div className="profile-field">
-//           <label>Bio:</label>
-//           <textarea
-//             value={formData.bio}
-//             onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-//           />
-//         </div>
-//         <div className="profile-buttons">
-//           <button onClick={handleUpdate}>Save</button>
-//           <button onClick={() => setEditMode(false)}>Cancel</button>
-//         </div>
-//       </>
-//     ) : (
-//       <>
-//         <p><strong>Email:</strong> {profile.email}</p>
-//         <p><strong>Bio:</strong> {profile.bio}</p>
-//         <button id="edit-profile" onClick={() => setEditMode(true)}>Edit Profile</button>
-//       </>
-//     )}
-
-//     <hr />
-//     <button className="logout-button" onClick={handleLogout}>Logout</button>
-//   </div>
-//   </div>
-//   </div>
-// );
-
-
 return (
   <div className="main-container">
     <div className="sidebar">
@@ -178,7 +123,7 @@ return (
       <div className="profile-container">
         <h2>Profile</h2>
         <p><strong>Username:</strong> {profile.username}</p>
-        <p><strong>Role:</strong> {profile.role}</p>
+        {/* <p><strong>Role:</strong> {profile.role}</p> */}
 
 
         {editMode ? (
