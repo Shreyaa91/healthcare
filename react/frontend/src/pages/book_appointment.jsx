@@ -6,6 +6,7 @@ import profilelogo from "./image.png";
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 
+
 const BookAppointment = ({user}) => {
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
@@ -38,6 +39,7 @@ const BookAppointment = ({user}) => {
 
   // Fetch schedule of selected doctor
   const fetchSchedule = async (doctorId) => {
+    console.log(doctorId);
     if (!doctorId) 
       {
         console.log("Doctor id not found")
@@ -59,6 +61,7 @@ const BookAppointment = ({user}) => {
       if (!response.ok) throw new Error("Failed to fetch schedule");
 
       const data = await response.json();
+      console.log(data);
       if (data.length === 0) {
         console.log("No schedule found");
         setSchedule([]);
@@ -201,7 +204,7 @@ const BookAppointment = ({user}) => {
               {schedule.filter(s => {
       if (!s.is_available) return false;
 
-      const slotStart = new Date(`${formatTime(s.available_date)}T${formatTime(s.start_time)}`);
+      const slotStart = new Date(`${(s.available_date)}T${(s.start_time)}`);
       const now = new Date();
 
       return slotStart > now; // Only future slots
@@ -210,7 +213,7 @@ const BookAppointment = ({user}) => {
                 <span className="slot-time">
                   <h5>Date:</h5>{slot.available_date} 
                   <br/>
-                  <h5>Time:</h5>{slot.start_time} to {slot.end_time}
+                  <h5>Time:</h5>{formatTime(slot.start_time)} to {formatTime(slot.end_time)}
                 </span>
                 <button id="booknow" onClick={() => bookAppointment(slot)} className="book-button">
                   Book Now

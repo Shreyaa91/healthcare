@@ -8,6 +8,7 @@ import profilelogo from "./image.png";
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 
+
 const AppointmentPage = ({ user }) => {
   const token=localStorage.getItem("token");
   const navigate = useNavigate();
