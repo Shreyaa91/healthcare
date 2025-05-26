@@ -1,24 +1,32 @@
 A Healthcare platform designed for chronic patients.It provides access to appointment booking, medical records and telemedicine consultations.
 
 Tech Stack:
-React, FastAPI, Supabase, Agora for telemedicine support.
+Frontend:React
+Backend:FastAPI
+Database:Supabase
++ Agora for telemedicine support.
 
 Features:
 Patients:
   Schedule,Reschedule and cancel appointments.
   Easy access to medical records.
   
-Doctors:
+Healthcare Providers:
   Creating and managing schedule.
+  Access patient health records.
+
   
 Common:
   Consultation reminder.
   Profile Management.  
+  Automated email notifications sent 30 minutes before appointments.
+
   
 Telemedicine Integration:
-  Built-in video/audio consultations using Agora SDK
-  Real-time chat during calls
-  Notes section for doctors
+  Built-in video/audio consultations using Agora SDK.
+  Real-time chat during calls.
+  Notes section.
+  Easy access to patient records for doctors during consultation.
 
 Create a .env file in the root of the React project:
 VITE_API_URL=your_backend_url (or local host)
@@ -39,3 +47,6 @@ load_dotenv()
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 
 Install requirements.txt
+
+DEPLOYED LINK:
+https://healthcare-o0rt.onrender.com
