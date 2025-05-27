@@ -23,6 +23,7 @@ const handleLogin = async () => {
       const formData = new URLSearchParams();
       formData.append("username", username);
       formData.append("password", password);
+      formData.append("role", role);
 
       const response = await axios.post(`${API_BASE_URL}/login`, formData, {
           headers: {

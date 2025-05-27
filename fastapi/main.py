@@ -12,7 +12,7 @@ import os
 import jwt
 import bcrypt
 from datetime import datetime, timedelta,date
-from fastapi import FastAPI, HTTPException, Depends,Request,Header,UploadFile,File,Form,Query
+from fastapi import FastAPI, HTTPException, Depends,Request,Header,UploadFile,File,Form,Query,Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel,Field
@@ -196,39 +196,34 @@ async def signup(user: UserSignup):
 
 #LOGIN
 @app.post("/login")
-async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    username = form_data.username  # FastAPI OAuth uses 'username' for login
-    password = form_data.password
-
-    # Check if user exists in `patients` or `specialists`
+async def login(
+    username: str = Form(...),
+    password: str = Form(...),
+    role: str = Form(...)
+):
     user = None
-    role = None
-    patient_response = supabase.table("patients").select("*").eq("username", username).execute()
-    if patient_response.data:
-        user = patient_response.data[0]
-        role = "patient"
-    specialist_response = supabase.table("doctors").select("*").eq("username", username).execute()
 
-    if specialist_response.data:
-        user = specialist_response.data[0]
-        role = "specialist"
+    if role == "patient":
+        response = supabase.table("patients").select("*").eq("username", username).execute()
+    elif role == "specialist":
+        response = supabase.table("doctors").select("*").eq("username", username).execute()
+    else:
+        raise HTTPException(status_code=400, detail="Invalid role")
 
-    
-   
-
-    if not user:
+    if response.data:
+        user = response.data[0]
+    else:
         raise HTTPException(status_code=401, detail="Invalid User ID")
-    
+
     if not verify_password(password, user["password"]):
         raise HTTPException(status_code=401, detail="Invalid password")
 
-    # Generate JWT token
     access_token = create_access_token(
-        data={"sub": user["username"], "role": role,"id": user["id"]},
+        data={"sub": user["username"], "role": role, "id": user["id"]},
         expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     )
-
     return {"access_token": access_token, "token_type": "bearer", "role": role}
+
 
 class EmailRequest(BaseModel):
     email: str

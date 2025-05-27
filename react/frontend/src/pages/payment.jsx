@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from 'react-router-dom';
 import "./payment.css";
+import { useNavigate } from "react-router-dom";
+
 
 const PaymentPage = ({ user }) => {
+  const navigate=useNavigate();
   const location = useLocation();
   const { totalPrice = 0, discount = 0, shippingCharge = 0 } = location.state || {};
 
@@ -22,7 +25,7 @@ const PaymentPage = ({ user }) => {
 
   const [savedAddress, setSavedAddress] = useState(null);
 
-  // ✅ Load the saved address for the current user
+
   useEffect(() => {
     const allAddresses = JSON.parse(localStorage.getItem("user_addresses")) || {};
     const userAddress = allAddresses[username];
@@ -61,6 +64,7 @@ const PaymentPage = ({ user }) => {
     }
 
     alert("Payment Successful!");
+    navigate('/medicineordering');
   };
 
   return (
