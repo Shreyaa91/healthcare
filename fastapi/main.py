@@ -316,6 +316,30 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         raise HTTPException(status_code=401, detail="Invalid token")
 
 
+@app.post("/upload-prescription")
+async def upload_prescription(file: UploadFile = File(...)):
+    try:
+        file_content = await file.read()
+
+        msg = EmailMessage()
+        msg['Subject'] = "Order Request"
+        msg['From'] = EMAIL_USER
+        msg['To'] = "priyadharshinispdias@gmail.com"
+        msg.set_content("A new prescription has been uploaded. See attachment")
+        msg.add_attachment(file_content, maintype="application", subtype="octet-stream", filename=file.filename)
+
+        print("Connecting to Gmail SMTP over SSL...")
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+            server.login(EMAIL_USER, EMAIL_PASS)
+            server.send_message(msg)
+
+        print("✅ Email sent successfully with attachment.")
+        return {"message": "Prescription uploaded and email sent successfully."}
+
+    except Exception as e:
+        print(f"❌ Error sending email: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to send email: {str(e)}")
+
 #FETCH ALL DOCTORS  
 @app.get("/doctors")
 def get_all_doctors():
@@ -653,79 +677,7 @@ def get_patient_details_from_slot(slot_id: str, doctor_id:str,user=Depends(get_c
 
 
 
-#MEDICAL RECORDS
 
-# @app.post("/upload_record/{user_id}")
-# async def upload_medical_record(
-#     user_id: str,
-#     file: UploadFile = File(...),
-#     current_user = Depends(get_current_user)
-# ):
-#     # Verify user has permission
-#     if user_id != current_user["id"]:
-#         raise HTTPException(status_code=403, detail="Forbidden")
-
-#     # Validate file
-#     if not file:
-#         raise HTTPException(status_code=400, detail="No file uploaded")
-
-#     # Validate file type
-#     allowed_types = [
-#         "application/pdf",
-#         "image/jpeg",
-#         "image/png",
-#         "text/plain"
-#     ]
-#     if file.content_type not in allowed_types:
-#         raise HTTPException(status_code=400, detail="File type not allowed")
-
-#     try:
-#         contents = await file.read()
-        
-#         # Generate safe filename
-#         file_ext = os.path.splitext(file.filename)[1]
-#         if not file_ext:
-#             file_ext = ".bin"  # default extension if none found
-        
-#         timestamp = datetime.utcnow().strftime("%Y%m%d%H%M%S")
-#         safe_filename = f"{timestamp}{file_ext}"
-#         path = f"records/{user_id}/{safe_filename}"
-
-#         # Upload to storage
-#         bucket_name = "medical-records"
-#         storage_client = supabase.storage.from_(bucket_name)
-        
-#         upload_result = storage_client.upload(
-#             path=path,
-#             file=contents,
-#             file_options={"content-type": file.content_type}
-#         )
-
-#         if upload_result.get("error"):
-#             raise HTTPException(status_code=500, detail="File upload failed")
-
-#         # Insert record into database
-#         db_result = supabase.table("medical_certificates").insert({
-#             "user_id": user_id,
-#             "file_path": path,
-#             "file_name": file.filename,
-#             "file_type": file.content_type,
-#             "file_size": len(contents)
-#         }).execute()
-
-#         if db_result.error:
-#             raise HTTPException(status_code=500, detail="Database operation failed")
-
-#         return {
-#             "message": "Uploaded successfully",
-#             "file_path": path,
-#             "file_name": file.filename
-#         }
-
-#     except HTTPException:
-#         raise
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
 @app.post("/upload_record/{user_id}")
 async def upload_medical_record(
     user_id: str,

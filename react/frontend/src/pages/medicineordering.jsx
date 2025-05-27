@@ -8,7 +8,9 @@ import { PiFolderSimpleMinusBold } from 'react-icons/pi';
 import { useCart } from '../pages/cartcontext';
 import { FiUpload } from 'react-icons/fi';
 import logo from './logo.jpg';
+import axios from "axios";
 const API_BASE_URL = import.meta.env.VITE_API_URL;
+// API_BASE_URL="http://localhost:8000"
 
 
 
@@ -53,13 +55,34 @@ const MedicineOrderingScreen = () => {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   
-  const uploadPrescription = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setPrescription(file);
-      alert('Prescription uploaded successfully!');
-    }
-  };
+  // const uploadPrescription = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     setPrescription(file);
+  //     alert('Prescription uploaded successfully!');
+  //   }
+  // };
+
+const uploadPrescription = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  try {
+    const response = await axios.post(`${API_BASE_URL}/upload-prescription`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    alert("Prescription uploaded and email sent!");
+  } catch (err) {
+    console.error("Upload failed:", err);
+    alert("Upload failed.");
+  }
+};
+
 
   const handleCartClick = () => {
     navigate('/cart');

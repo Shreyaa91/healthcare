@@ -5,9 +5,11 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 import profilelogo from "./image.png";
-// const API_BASE_URL = import.meta.env.VITE_API_URL;
+
+
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
+// API_BASE_URL="http://localhost:8000"
 
 
 const AppointmentPage = ({ user }) => {
